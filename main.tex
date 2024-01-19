@@ -6,7 +6,7 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass[oneside, paper=a4, fontsize=12pt, german, dissertation, open=right, colorpdf, dvipsnames]{scrreprt} 
+\documentclass[twoside, paper=a4, fontsize=12pt, german, open=right, colorpdf, dvipsnames]{scrreprt} 
 % available options for this document class: 
 % oneside/twoside: for one- or two-sided printing 
 % english/german:
@@ -22,28 +22,33 @@
 % Available Abbreviations: BA, MA, RP (Forschungsprojekt/Research Project) -> Dissertation is enabled via the ``dissertation'' option in documentclass (see above)
 % The abbreviations are defined for both German and English
 % You do not have to use the abbreviations but can enter the FULL thesis type manually 
-\thesistype{MA} 
+\thesistype{Praktikumsbericht} 
 \usetikzlibrary{patterns}
-\finaldate{May 4th 2018}
+\finaldate{31. März 2024}
 
-\title{A Template for Dissertations, Final Theses, and Research Projects} % Titel der Arbeit
-\subtitle{May the force be with you.} % Untertitel (falls vorhanden)
-\author{Felix Petzke} % Name des bearbeitenden Studenten
+\title{Entwicklung und Implementierung einer automatisierten szenariobasierten Unit-Test Strategie für einen modellprädiktiven Pfadfolgeregler in einer GitLab Pipeline} % Titel der Arbeit
 
+\subtitle{vorgelegt von} % Untertitel (falls vorhanden)
+
+\author{Georg Ehrler} % Name des bearbeitenden Studenten
+
+%%%%%%%% Personal Information for BA, MA, RP
+\matrikel{521446}
+\course{Energie- und Automatisierungssysteme}
 %%%%%%%% Specific information for option "dissertation" %%%%%%%%
-\dateofbirth{29.08.1988} % Geburtstag des bearbeitenden Studenten
-\placeofbirth{Magdeburg} % Geburtsort des bearbeitenden Studenten
+\dateofbirth{07.07.1999} % Geburtstag des bearbeitenden Studenten
+\placeofbirth{Zwickau} % Geburtsort des bearbeitenden Studenten
 %%%%%%%% Specific information for option "final" %%%%%%%% %%%%
 \dateofsubmission{22.02.2022} 
 \dateofdefence{33.03.3033} 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\supervisor{Dr.\,-Ing. Arne-Jens Hempel} % Betreuer #1
-\supervisor{Prof. Charles Xavier (Firma X)} % Betreuer #2 (weitere Betreuer mit \supervisor{...} hinzufügen)
+\supervisor{Francisco Moreno, M.Sc.} % Betreuer #1
+\supervisor{Robert Ritschel, M.Sc. (IAV)} % Betreuer #2 (weitere Betreuer mit \supervisor{...} hinzufügen)
 
 \examiner{Prof. Dr.\,-Ing. habil. Stefan Streif} % Prüfer (i.d.R. Prof. habil. Dr.\,-Ing. Stefan Streif); Für Dissertation: Gutachter (mehrere Gutachter möglich wie bei supervisor)
 
-\company{Firma X} % (optional) Name der Firma; Logo in figures/company_logo.pdf
+\company{IAV GmbH} % (optional) Name der Firma; Logo in figures/company_logo.pdf
 
 %\hyphenation{Put special hyphenation here}
 \sloppy

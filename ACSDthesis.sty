@@ -175,6 +175,10 @@
 \def\dateofbirthstring{}
 \def\placeofbirth#1{\def\placeofbirthstring{#1}}
 \def\placeofbirthstring{}
+\def\matrikel#1{\def\matrikelstring{#1}}
+\def\matrikelstring{}
+\def\course#1{\def\coursestring{#1}}
+\def\coursestring{}
 \def\dateofsubmission#1{\def\dateofsubmissionstring{#1}}
 \def\dateofsubmissionstring{}
 \def\dateofdefence#1{\def\dateofdefencestring{#1}}
@@ -480,13 +484,22 @@ pdfcreator={pdfLaTeX}
 		\vfill
 		\begin{center}
 			\large\noindent \@thesistype{}\\\vspace{14pt}
-			{\LARGE\textsc{\titlestring}\\\vspace{5pt}\large\textsc{\subtitlestring}}
+			{\LARGE\textsc{\titlestring}\\\vspace{20pt}\large{\subtitlestring}}
 		\end{center}
 		\vspace{\fill}
 		\begin{center}
 			\Large\authorstring
 		\end{center}
-		\vspace{\fill}
+        % PERSONAL INFORMATION
+        \vspace{\fill}
+        \begin{center}
+			\hfill\parbox[t]{.25\textwidth}{\large{Matrikel-Nr.:}\enspace}%
+			\parbox[t]{.6\textwidth}{\large\matrikelstring}
+		\end{center}
+        \begin{center}
+			\hfill\parbox[t]{.25\textwidth}{\large{Studiengang:}\enspace}%
+			\parbox[t]{.6\textwidth}{\large\coursestring}
+		\end{center} 
 		% SUPERVISOR
 		\vspace{\fill}
 		\newlength{\@tmpwidthx} \newlength{\@tmpwidthy} \newlength{\@tmpwidthz}
