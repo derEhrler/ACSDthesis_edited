@@ -1,0 +1,41 @@
+\chapter{Conclusion and outlook}
+This template might still have some bugs or issues. If you encounter any, here is a checklist of what you should do:
+\begin{enumerate}
+\item \textsc{Download the latest version from our server!} I cannot stress this enough! You will find it either in \texttt{P:\textbackslash students\textbackslash common} or you can ask your supervisor.
+\item Ask your fellow students if anyone has encountered the issue before and if they know what's the problem. 
+\item Tell me (Felix Petzke) about the issue. I will then either provide you with a fix or a workaround. 
+\end{enumerate}
+
+Oh look, this was also an example for a numerated list using the \texttt{enumerate} environment. A list of bullet-points can be created with the \texttt{itemize} environment, as shown in the next section.
+
+\section{Options of the ACSDthesis Package}
+\label{sec:options}
+You might ask why this section is almost at the end. As it turns out, most of the available options of the ACSDthesis package are not relevant during the writing process. Here is a list of available options and their respective effect:
+\begin{itemize}
+\item \texttt{onepage / twopage} -- toggle printing on one side or two sides (duplex). For optimal results with respect to the A5 book version (cf. Sec. \ref{sec:print}) only use the twopage option if you have more than 100 written pages of text in your PDF!
+\item \texttt{english / german} -- toggle language setting. This will change all automatically generated marks and labels to the respective language.
+\item \texttt{colorpdf} -- adding this will make all references colored. \textsc{Delete this option before creating your PDF for printing!} (cf. Section \ref{sec:print})
+\item \texttt{parts} -- activate the \texttt{\textbackslash parts\{\}} command that is one layer above chapters. This option should only be used for very long theses and has to be passed to ACSDthesis in the file  \texttt{ACSDthesis\_config.tex}.
+\end{itemize}
+
+\section{Printing your Thesis}
+\label{sec:print}
+It is done! You finished your thesis! Now you just have to print it in our beautiful A5 book format so it can join its papery comrades in our ACSD library, to be read again by generations of suceeding students. 
+The printing process is actually a piece of cake, thanks to our also available book cover template. The following steps will guide you to success:
+\begin{enumerate}
+\item Make sure that you typeset your thesis \textsc{without} the colorpdf option (cf. Sec. \ref{sec:options})! It will save you a \textsc{lot} of money!
+\item Tell your supervisor that you are ready to print. He will have access to the cover template and help you with it.
+\item If necessary, make sure you filled in all the information in the Statement of Authorship (Selbstst{\"a}ndigkeitserkl{\"a}rung) at that it has been properly attached to your thesis. You'll find it in the folder \texttt{99\_Authorship}.
+\item Convert your thesis created with this template to an A5-version using the tex-file \texttt{MakeA5Version.tex}, which is contained in the folder of the cover-template.
+\item Choose a cover image for your thesis and copy it to the cover template folder. This could be an illustration of the main method you used or just a nice picture that fits the topic of your thesis. However, make sure that there are no copyright issues!
+\item Open up \texttt{MakeCover.tex} and fill in all the necessary data. Especially focus on
+\begin{itemize}
+\item the volume number of your thesis, which you will get from your supervisor;
+\item the short title, which will be printed on the spine of the book and therefore has a limited length of about 70 letters (including whitespaces) -- this means that if your title has less than 70 letters you can use it as short title as well;
+\item the number of \textit{printed} pages (\ie number of sheets of paper the printed thesis will have) at the very beginning of the code. Note that if you use two-sided printing the number of pages shown in the PDF editor is twice the number of printed pages! For optimal results this number should not be less than 50, so only use two-sided printing if you have more than 100 written pages!
+\end{itemize}
+\item Typeset the file and \textsc{check everything again on the produced PDF!} You can then tell Mr. Trompke that you are ready to print -- he will help you from here on.
+\end{enumerate}
+
+
+

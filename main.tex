@@ -1,0 +1,94 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 					ACSD Thesis Template v.2018a				 		%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HowTo: https://acsd.etit.tu-chemnitz.de:5001/doku.php?id=start (TBD)
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[oneside, paper=a4, fontsize=12pt, german, dissertation, open=right, colorpdf, dvipsnames]{scrreprt} 
+% available options for this document class: 
+% oneside/twoside: for one- or two-sided printing 
+% english/german:
+% dissertation: switches title page to dissertation style (submitted)
+% final: works only in combination with "dissertation" option, switches titlepage style to final version (requires additional information)
+% colorpdf: enebales full color mode (document will be greyscale if deleted - recommended for draft printing)
+
+\input{ACSDthesis-config} % Includes the file which contains all the document configurations and packages - make sure to edit this file
+
+\addbibresource{thesis.bib} % The file housing your bibliography
+%\addbibresource[label=ownpubs]{Self_Publications.bib} % Uncomment for optional self-publications
+
+% Available Abbreviations: BA, MA, RP (Forschungsprojekt/Research Project) -> Dissertation is enabled via the ``dissertation'' option in documentclass (see above)
+% The abbreviations are defined for both German and English
+% You do not have to use the abbreviations but can enter the FULL thesis type manually 
+\thesistype{MA} 
+\usetikzlibrary{patterns}
+\finaldate{May 4th 2018}
+
+\title{A Template for Dissertations, Final Theses, and Research Projects} % Titel der Arbeit
+\subtitle{May the force be with you.} % Untertitel (falls vorhanden)
+\author{Felix Petzke} % Name des bearbeitenden Studenten
+
+%%%%%%%% Specific information for option "dissertation" %%%%%%%%
+\dateofbirth{29.08.1988} % Geburtstag des bearbeitenden Studenten
+\placeofbirth{Magdeburg} % Geburtsort des bearbeitenden Studenten
+%%%%%%%% Specific information for option "final" %%%%%%%% %%%%
+\dateofsubmission{22.02.2022} 
+\dateofdefence{33.03.3033} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\supervisor{Dr.\,-Ing. Arne-Jens Hempel} % Betreuer #1
+\supervisor{Prof. Charles Xavier (Firma X)} % Betreuer #2 (weitere Betreuer mit \supervisor{...} hinzufügen)
+
+\examiner{Prof. Dr.\,-Ing. habil. Stefan Streif} % Prüfer (i.d.R. Prof. habil. Dr.\,-Ing. Stefan Streif); Für Dissertation: Gutachter (mehrere Gutachter möglich wie bei supervisor)
+
+\company{Firma X} % (optional) Name der Firma; Logo in figures/company_logo.pdf
+
+%\hyphenation{Put special hyphenation here}
+\sloppy
+
+\begin{document}
+
+\frenchspacing % Reduces space after periods to make text more compact
+\raggedbottom % Makes all pages the height of the text on that page
+
+%----------------------------------------------------------------------------------------
+%	PRE-CONTENT THESIS PAGES
+%----------------------------------------------------------------------------------------
+
+\pagenumbering{roman} % Roman page numbering prior to the start of the thesis content (i, ii, iii, etc)
+\pagestyle{plain} % Suppress headers for the pre-content pages
+\maketitle
+\pagenumbering{Roman}
+
+\include{00_Preface/Kurzfassung}%%Abstract
+\include{00_Preface/Inhaltsverzeichnis}%%Inhaltsverzeichnis (including tocdepth & secnumdepth options)
+\include{00_Preface/Symbolverzeichnis}%%Symbolverzeichnis
+\include{00_Preface/Abkuerzungsverzeichnis}%%Symbolverzeichnis
+\addtocontents{lof}{\protect\vspace{-.9em}} % Fix LoF top margin! Do not edit or delete!!!
+\listoffigures\addcontentsline{toc}{chapter}{List of Figures}%%Abbildungsverzeichnis
+
+\cleardoublepage
+\pagestyle{scrheadings} % Show chapter titles as headings
+\pagenumbering{arabic} % Arabic page numbering for thesis content (1, 2, 3, etc)
+\cleardoublepage % Avoids problems with pdfbookmark
+\renewcommand*{\arraystretch}{1}
+
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - CHAPTERS
+%----------------------------------------------------------------------------------------
+\include{10_Introduction/Introduction}
+\include{20_ProblemSetup/ProblemSetup}
+\include{30_Implementation/Implementation}
+\include{40_Simulations/Simulations}
+\include{50_Conclusion/Conclusion}
+\include{60_Bibliography/Bibliography}
+
+%----------------------------------------------------------------------------------------
+%	STATEMENT OF AUTHORSHIP
+%----------------------------------------------------------------------------------------
+\cleardoublepage
+\includepdf[pages=-]{99_Authorship/selbststaendigkeitserklaerung} 
+\cleardoublepage
+\end{document}

@@ -1,0 +1,44 @@
+\chapter{Problem Setup}
+This chapter generally defines the actual problem to be addressed in this thesis. Illustrations help to explain the task to the reader.
+
+\section{Simple Formulas and Complex Tikz}
+Regarding this dummy thesis, a general hierarchical problem setup is depicted in Figure \ref{fig:problem}.\footnote{Just by chance it also gives you an example for a more complex block diagram using tikz.} The system $\bar{\mathcal{S}}$ used in the presented figure is defined as
+\begin{align*}
+\bar{\mathcal{S}}:
+\begin{cases}
+\dot{\bar{x}}=\bar{A}\bar{x}+\bar{B}\bar{u},\\
+\bar{y}=\bar{C}\bar{x},
+\end{cases}
+\end{align*}
+where $\bar{B}=\sum_{i=1}^{N}\hat{B}_{i}\alpha_{i}$. Is this was an actual thesis you should properly define all other variables that are used in a figure as well! But since this is a dummy, let's just pretend this was the case here. An important thing to note is that \LaTeX\; does not like footnotes and figures on the same page, since both take up space at the bottom.
+
+The following section provides some dummy equations that utilize some nice alignments and combined equation numbering.
+
+\begin{figure}
+\centering
+\rotatebox{90}{\input{figures/tikz_problem}}
+\caption[Complex block diagrams in tikz]{General problem setup. This is also an example for a more complex block diagram using tikz. The code for this picture is located in the separate file \texttt{./figures/tikz\_problem.tex}; it also demonstrates how to scale entire tikz-images. The last thing this figure shows is how to rotate things that are not images using the \texttt{\textbackslash rotatebox\{<angle>\}\{<stuff to rotate>\}} command. Since no positioning of the figure has been enforced, it got moved to the next page to avoid clashes with footnote 1.}
+\label{fig:problem}
+\end{figure}
+
+\section{Formula Heaven}
+The value function considered in the high-level MPC is defined as (cf. \cite{Betti2013})
+\begin{align}
+\begin{split}
+V_{H}=&\;\|r-\bar{r}_{t}\|^{2}_{S}+\|\Delta\bar{x}(t+N_{H})\|^{2}_{P}+\|\bar{y}(t+N_{H})-\bar{r}_{t}\|^{2}_{P}\\&
++\sum_{k=t}^{t+N_{H}-1}\left\{\|\Delta\bar{x}(k)\|^{2}_{Q}+\|\bar{y}(k)-\bar{r}_{t}\|^{2}_{Q}+\|\Delta\bar{u}(k)\|^{2}_{R}\right\}.
+\end{split}
+\end{align}
+The resulting optimization problem is then given by
+\begin{align}
+\begin{split}
+\bar{u}^{\star} = &\;\arg\underset{\bar{u}, r_{t}}{\min}\left\{V_{H}(\delta\bar{x}_{t}, \bar{y}_{t}, r_{t}, \delta\bar{u}_{[t:t+N_{H}-1]}; x_{t}, y_{t}, r)\right\}\\
+\text{s.t.}\;&\;\bar{\mathcal{S}}^{T},\\
+&\;\delta\bar{u}(k)=\bar{u}(k)-\bar{u}(k-1)\\
+&\;\bar{u}(k)\in\bar{\mathcal{U}}\\
+&\;\bar{x}(k)\oplus\mathcal{W}\in\bar{\mathcal{X}}.
+\end{split}
+\end{align}
+Always make sure to format your formulas in a pleasing way.
+
+
