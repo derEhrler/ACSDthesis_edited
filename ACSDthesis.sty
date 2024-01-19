@@ -307,10 +307,10 @@ pdfcreator={pdfLaTeX}
     \automark[section]{chapter}
     \renewcommand{\chaptermark}[1]{\markleft{\thechapter\enspace\scshape{#1}}}
     \renewcommand{\sectionmark}[1]{\markright{\thesection\enspace\scshape{#1}}}
-    \lehead{\mbox{\headmark\hfil}}
-    \lefoot[\thepage]{\thepage}
-    \rohead{\mbox{\hfil\headmark}}
-    \rofoot[\thepage]{\thepage}
+    \lohead{\mbox{\headmark\hfil}}
+    \rohead[\thepage]{\thepage}
+    \rehead{\mbox{\hfil\headmark}}
+    \lehead[\thepage]{\thepage}
     \renewcommand{\headfont}{\scshape}  
     \def\toc@heading{
             {\chapter*{\contentsname}}%chapters
