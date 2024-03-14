@@ -1,20 +1,27 @@
 \chapter{Einleitung} \label{chap:Einleitung}
 \thispagestyle{empty}
-Die modellprädiktive Regelung (MPC) hat sich in vielen Industrien, einschließlich der Automobilindustrie, als effektive Methode zur Vorhersage und Regelung dynamischer Systeme herausgestellt. Im Bereich des automatisierten Fahrens können durch die Anwendung von MPC optimale Fahrentscheidungen in Echtzeit getroffen werden, die den Komfort und die Sicherheit des Fahrzeugs erhöhen. Bezogen auf die sehr hohen Ansprüche an Sicherheit und im besonderen Maße an die Zuverlässigkeit solcher Systeme, sollen im Rahmen dieses Pflichtpraktikums realitätsnahe Fahrszenarien entwickelt werden, welche mittels festgelegter Key Performance Indicators (KPIs) in einer Test-Pipeline bewertet werden sollen.\\
+Gestzlichen Bestimmung zur Erhöhung der Sicherheit von sowohl den Insassen eines Fahrzeugs als auch anderer Verkehrsteilnehmer hat zu einer signifikanten Senkung der Mortalitätsrat bei Verkehrsunfällen beigetragen und den Straßenverkehr in den letzten Jahren wesentlich sicherer gemacht, siehe Abbildung \ref{fig:Statistik_Tote}.
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/1_Einleitung/verkehrsunfaelle-getoetete-jahr.png}
+    \caption{Bei Verkehrsunfällen Getötete pro Jahr in Tausend \cite{StBA2021}}
+    \label{fig:Statistik_Tote}
+\end{figure}
+\noindent Im Jahr 2021 gab es über 250.000 Unfälle mit Personenschaden auf deutschen Straßen. In 88\% der Fälle ist die Ursache auf ein Fehlverhalten der Fahrzeugführer zurückzuführen \cite{StBA2021}. Der Einsatz von automatisierten Fahrzeugen kann zu einem weiteren "Knick" in den Statistiken führen, indem es den Fahrer durch Einsatz von intelligenten Asstenzsystemen unterstützt oder die menschliche Fehlerkomponente gänzlich beseitigt, indem ein Fahrzeug vollständig autonom fährt.
 
-\noindent\textbf{Aufgabenstellung}\\
-\noindent Im Rahmen des Praktikums soll eine automatisierte Teststrategie für dieses Modul konzeptioniert und implementiert werden.Teilaufgaben dabei sind:
+Um die Sicherheit der Fahrzeuge zu gewährleisten muss sowhl das Gesamtsystem als auch alle Teilsysteme intensiv getestet werden. Eines dieser Teilsystem für das hochautomatisierte Fahren ist die Regelung der Längs- und Querführung des Fahrzeugs. Bei der IAV\footnote{\url{https://www.iav.com/}} geschieht dies durch einen modellprädiktiven Pfadfolgeregler.\bigskip
+
+\noindent\textbf{Aufgabenstellung}\smallskip
+
+\noindent Im Rahmen des Praktikums soll eine automatisierte Teststrategie für einen modellprädiktiven Pfadfolgeregler (MPFC) konzeptioniert und implementiert werden.
+
+Modellprädiktive Regler (MPC) eignen sich hervorragend für die Vorhersage und Regelung dynamischer System, weshalb sie in vielen Industriezweigen, einschließlich der Automobilindustrie, Anwendung finden. Im Bereich des hochautomatisierten Fahrens können mithilfe von MPC in Echtzeit Fahrentscheidungen, die sowohl sicherheits- als auch komfortrelevante Anforderungen erfüllen, getroffen werden. Um die Sicherheit und Zuverlässigkeit des Systems sicherzustellen sollen realitätsnahe Fahrszenarien ermittelt und anhand von festgelegten Key Performance Indicators (KPIs) bewertet werden. Dieser Prozess soll automatisiert in einer CI Pipeline ablaufen.\medskip
+
+\noindent Es sind die folgenden Teilaufgaben umzusetzen:
 \begin{itemize}
-    \item Konzeptentwicklung
-    \item Definition geeigneter Fahrszenarien
-    \item Parametrierung
-    \item Definitionvon KPIs zur Beurteilung der Leistung der MPC
+    \item Konzeptentwicklung für das automatisierte, szenariobasierte Testen der MPFC unter Verwendung der bestehenden Simulationsumgebung
+    \item Definition und Parametrierung geeigneter Fahrszenarien
+    \item Definition von Key Performance Indicators zur Beurteilung der Leistung der Regelung
     \item Einbindung in eine Gitlab CI Pipeline
+    \item Dokumentation der Ergebnisse
 \end{itemize}
-
-\noindent\textbf{Strukturierung}\\
-\noindent Im nächsten Kapitel wird zunächst eine Einführung in alle Themenbereiche gegeben. Insbesondere wird der modellprädiktive Pfadfolgeregler näher erläutert, um ein besseres Systemverständnis zu erlangen und so die Qualität der Tests zu steigern. Außerdem wird auf  Strategien für das Überprüfen von Software und Testabläufe, speziell in der Automobilindustrie, näher eingegangen und ein Einblick in aktuelle Softwarentwicklungsabläufe mit \textit{Continious Integration (CI)} und \textit{Continious Deployment (CD)} gegeben.
-
-Anschließend werden die implementierten Tests vorgestellt. Dies beinhaltet den Aufbau der Testklassen, die Parametrierung der Fahrszenarien und die Definition von Kriterien für die Bewertung der Simulationsergebnisse, \textit{Key Performance Indicators (KPI)}.
-
-Abschließend wird der Ablauf in der Gitlab CI Pipeline und einige durch die Tests aufgedeckte Probleme der aktuellen Reglerimplementierung vorgestellt.
