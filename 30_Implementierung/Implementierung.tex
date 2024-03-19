@@ -1,22 +1,16 @@
 \chapter{Implementierung} \label{chap:Implementierung}
 \thispagestyle{empty}
-
 In diesem Kapitel werden die implementierten Funktionen und Klassen dokumentiert. Dabei wird zunächst der Aufbau und Ablauf von klassenbasierten Unit-Tests aus dem MATLAB\textsuperscript{\textregistered} Unit Test Framework beschrieben und wie sich damit ein Konzept für das szenariobasierte Testen realisieren lässt. Weiterhin werden die implementierten Szenarien sowie deren Parametrierung und Ergebnisbewertung durch KPIs vorgestellt und auf ausgewählte Szenarien näher eingegangen. Abschließend wird die Implementierung in der Gitlab CI Pipeline erläutert.
 
 \section{Anforderungen} \label{sec:Anforderungen}
-
 Aus der Aufgabenstellung ergeben sich bereits die wichtigsten Anforderungen. Zunächst soll ein Konzept für das Testen der MPFC basierend auf dem MATLAB\textsuperscript{\textregistered} Unit Test Framework erarbeitet werden. Dafür muss eine geeignete Struktur gefunden werden, welche eine automatisierte Ausführung ermöglicht und Variationen von sowohl Testparametern (bspw. Initialgeschwindigkeiten) als auch MPC-Parametern (bspw. Gewichte der Kostenfunktion) leicht umzusetzen sind. 
 
-In nächsten Schritt sollen Szenarien gefunden und parametriert werden, welche für den Regelungsalgorithmus eine Herausforderung darstellen und so das Verhalten in kritischen Situationen getestet werden kann.
+Es sollen Szenarien gefunden und parametriert werden, welche für den Regelungsalgorithmus eine Herausforderung darstellen und so das Verhalten in kritischen Situationen getestet werden kann.
 
 Um die Simulationsergebnisse bewerten zu können, sollen geeignete Kriterien festgelegt werden, die sowohl Sicherheit als auch Komfort der gefundenen Lösung bewerten. Aus den Testergebnissen soll ein Bericht erstellt werden, welcher dem Entwickler übersichtlich mögliche Fehlschläge aufzeigt.
 
 \section{Simulationsumgebung} \label{sec:Simulationsumgebung}
-
-Der Regelungsalgorithmus und die Simulationsumgebung sind in MATLAB\textsuperscript{\textregistered}/Simulink implementiert. Aus den Streckeninformationen wird ein gewünschter Pfad mit einer Zielgeschwindigkeit generiert. Abbildung \ref{fig:Simulation_Strecke} zeigt den generierten Plot, welcher bei Start der Simulation das Fahrzeug auf der Strecke simuliert.
-
-% TODO: Erläutern, dass Pfadplanung extra geschihet und bei IAV von einem anderen Modul kommt
-
+Die Simulationsumgebung und der Regelungsalgorithmus sind bereits in vorherigen Entwicklungsprojekten bei der IAV entstanden und sind in MATLAB\textsuperscript{\textregistered}/Simulink implementiert. Aus den Streckeninformationen wird ein gewünschter Pfad mit einer Zielgeschwindigkeit generiert. Abbildung \ref{fig:Simulation_Strecke} zeigt den generierte Live-Plot, welcher bei Start der Simulation das Fahrzeug auf der Strecke darstellt.
 \begin{figure}
     \centering
     \includegraphics[width=0.6\textwidth]{figures/3_Implementierung/simulationsumgebung.pdf}
@@ -24,19 +18,18 @@ Der Regelungsalgorithmus und die Simulationsumgebung sind in MATLAB\textsuperscr
     \label{fig:Simulation_Strecke}
 \end{figure}
 
-\section{MATLAB Unit Test Framework} \label{sec:MatlabUnitTest}
+\section{MATLAB\textsuperscript{\textregistered} Unit Test Framework} \label{sec:MatlabUnitTest}
+MATLAB\textsuperscript{\textregistered}, in der für dieses Praktikum verwendeten Version 2022a und 2023b, stellt in der Basiskonfiguration ein umfangreiches Framework für die Implementierung von Unit Tests zur Verfügung \cite{matlabTest}. Eine Verwendung dieser Funktionalität für das Testen der MPFC liegt nahe, da diese vollständig in diesem Programm implementiert ist.
 
-MATLAB\textsuperscript{\textregistered}, in der für dieses Praktikum verwendeten Version 2022a und 2023b, stellt in der Basiskonfiguration ein umfangreiches Framework für die Implementierung von Unit Tests zur Verfügung \cite{matlabTest}. Eine Verwendung dieser Funktionalität für das Testen der MPFC liegt nahe, da diese vollständig in Matlab/Simulink implementiert ist. Da es firmenintern noch keine Auseinandersetzung mit diesem Tool gibt wurde sich in der ersten Phase des Praktikums darin eingearbeitet, um die Funktionen zu entdecken und einen möglichst eleganten Weg zu finden die weiteren Aufgaben darin umzusetzen.
+Grundsätzlich gibt es drei Arten von Testabläufen: skriptbasierte, funktionsbasierte und klassenbasierte Tests. Nach Befassen mit den entsprechenden Dokumentationsseiten wurde sich für die Nutzung der klassenbasierten Tests entschieden, da diese den größten Funktionsumfang bieten. Ein entscheidender Faktor ist die Möglichkeit, Tests durch externe Parameter zu parametrieren, was eine direkte Anforderung an das zu entwickelnde Konzept ist \cite{matlabTest}.
 
-Grundsätzlich gibt es drei Arten von Testabläufen: skriptbasierte, funktionsbasierte und klassenbasierte Tests. Nach befassen mit den entsprechenden Dokumentationsseiten wurde sich für die Nutzung der klassenbasierten Tests entschieden, da diese den größten Funktionsumfang bieten. Ein entscheidender Faktor ist die Möglichkeit, Tests durch externe Parameter zu parametrieren, was eine direkte Anforderung an das Programm ist \cite{matlabTest}.
+Das von Mathworks implementierte Framework ähnelt in vielen Gesichtspunkten der xUnit Architektur indem es die gleichen grundlegenden Strukturen aufweist \cite{xUnitWiki}. Die kleinste Einheit dieser Architektur ist der \textit{test case}. In diesem wird über \textit{assertions}, dies sind meist logische Operationen, festgestellt, ob sich ein System im Normbereich verhält. Ist dies nicht der Fall, wird der Test abgebrochen und als fehlgeschlagen angesehen.
 
-Das von Mathworks implementierte Framework ähnelt in vielen Gesichtspunkten der xUnit Architektur indem es die gleichen grundlegenden Strukturen aufweist \cite{xUnitWiki}. Die kleinste Einheit dieser Architektur ist der \textit{test case} (hier: Testmethode). In dieser wird über \textit{assertions}, dies sind meist logische Operationen, festgestellt, ob sich ein System im Normbereich verhält. Ist dies nicht der Fall, wird der Test abgebrochen und als fehlgeschlagen angesehen.
+Um sicherzustellen, dass sich das \textit{System Under Test (SUT)} vor einem Test in einem definierten Zustand befindet und vorherige Programmausführungen keine Auswirkungen auf die Testergebnisse haben wird über \textit{test fixtures} dieser definierte Zustand hergestellt \cite{xUnitpatterns}. Bei klassenbasierten Tests gibt es mehrere Stellen an denen initiale Zustände hergestellt werden können. Mithilfe der Setup-Methoden können Voraussetzungen für mehrere Klassen (shared fixtures), für alle Testfälle einer Klasse (testclass setup) initial oder vor Ausführung jedes einzelnen Testfalls (testmethod setup) geschaffen werden.
 
-Um sicherzustellen, dass sich das \textit{System Under Test (SUT)} vor einem Test in einem definierten Zustand befindet und vorherige Programmausführungen keine Auswirkungen auf die Testergebnisse haben wird über \textit{test fixtures} dieser definierte Zustand hergestellt \cite{xUnitpatterns}. Bei klassenbasierten Tests gibt es mehrere Stellen an denen initiale Zustände hergestellt werden können. Mithilfe der Setup-Blöcke können Voraussetzungen für mehrere Klassen (shared fixtures), für alle Testmethoden einer Klasse (testclass setup) initial oder vor Ausführung jeder einzelnen Testmethode (testmethod setup) geschaffen werden.
+Eine \textit{test suite} ist eine Sammlung von Testfällen, welche die gleichen Initialzustände teilen. Da in der späteren Implementierung eine Testsuite immer aus lediglich einer Testklasse erstellt wird bezeichnen Testsuite und Testklasse hier das gleiche Objekt. 
 
-Eine \textit{test suite} ist eine Sammlung von Testmethoden, welche die gleichen Initialzustände teilen. Da in der späteren Implementierung eine Testsuite immer aus lediglich einer Testklasse erstellt wird bezeichnen Testsuite und Testklasse hier das gleiche Objekt. 
-
-Bei klassenbasierten Tests ist es möglich, externe Parameter in die Testklasse zu laden. Diese können als Testparameter, Testinitialisierungsparameter oder Klasseninitialisierungsparameter übergeben werden. Abhängig davon, welche Parametertypen und wieviel Variationen definiert sind, werden Testmethoden und die verschiedenen Setup-Blöcke mehrmals ausgeführt. Eine eigene Darstellung des Ablaufs einer Testklasse ist in Abbildung \ref{fig:Testklassen_Ablauf} zu sehen. 
+Bei klassenbasierten Tests ist es möglich, externe Parameter in die Testklasse zu laden. Diese können als Testparameter, Testinitialisierungsparameter oder Klasseninitialisierungsparameter übergeben werden. Abhängig davon, welche Parametertypen und wieviel Variationen definiert sind, werden Testfälle und die verschiedenen Setup-Methoden mehrmals ausgeführt. Eine eigene Darstellung des Ablaufs einer Testklasse ist in Abbildung \ref{fig:Testklassen_Ablauf} zu sehen. 
 
 \begin{figure}
     \centering
@@ -45,7 +38,7 @@ Bei klassenbasierten Tests ist es möglich, externe Parameter in die Testklasse 
     \label{fig:Testklassen_Ablauf}
 \end{figure}
 
-Ein konfigurierbarer \textit{test runner} führt die Tests aus. Das Framework sorgt selbstständig dafür, dass die notwendigen Setup-Blöce an den richtigen Stellen ausgeführt werden.
+Ein konfigurierbarer \textit{test runner} führt die Tests aus. Das Framework sorgt selbstständig dafür, dass die notwendigen Setup-Methoden an den richtigen Stellen ausgeführt werden.
 
 Für die Darstellung der Testergebnisse existiert ein \textit{test result formatter}, welcher die Ergebnisse in vielen Formaten, beispielsweise PDF order XML, aufbereitet.
 
@@ -64,22 +57,22 @@ Zur vollständigen Beschreibung eines Szenarios werden initial folgende Paramete
 	\item Streckeninformationen
 	\item (nur für ACC) Objekttrajektorie
 \end{itemize}
-Die Fahrzeugparameter, wie zum Beispiel die Länge eines Fahrzeugs oder die Parameter für das Fahrzeugmodell, gehen aus der betriebsinternen Dokumentation hervor. Diese werden über ein Skript geladen und fahrzeugspezifisch sind. Der Parameter hier ist lediglich das verwendete Fahrzeug.
+Die Fahrzeugparameter, wie zum Beispiel die Länge eines Fahrzeugs oder die Parameter für das Fahrzeugmodell, gehen aus der betriebsinternen Dokumentation hervor. Diese werden über ein Skript geladen und sind fahrzeugspezifisch. Der Parameter hier ist lediglich das verwendete Fahrzeug.
 
 Der Initialzustand eines Fahrzeugs kann mehrere Parameter umfassen. Hier kann beispielsweise die Geschwindigkeit zu Beginn der Simulation oder ein Versatz zum gewünschten Pfad vorgegeben werden.
 
-Die MPC selbst ist durch \cite{math11020465} bereits pareto-optimal parametriert. Es stehen allerdings für verschiedene Fahrweisen, von gemütlich bis sportlich, Parametersets zur Verfügung, welches so einen weiteren Simulationsparameter darstellt.
+Die MPFC wurde durch geeignet Methoden, beispielsweise wie in \cite{math11020465} vorgestellt, für die gestellten Anforderungen der Fahrzeugführung parametriert. Es stehen für verschiedene Fahrweisen, von komfortabel bis sportlich, Parametersets zur Verfügung. Das gewählte Parameterset ist damit ein weiterer Simulationsparameter.
 
-Nachdem Fahrzeug und Regler initialisiert sind, wird im nächsten Schritt ein zu folgender Pfad generiert. Dafür steht eine Bibliothek zur Verfügung, mit deren Hilfe ein Pfad aus einfachen geometrischen Objekten - Gerade, Kreisbogen und Klothoid - erzeugt werden kann. Ein Klothoid ist ein Kreisbogen, dessen Krümmung proportional zur Länge ist und somit keinen Sprung in der Krümmung aufweist \cite{klothoidWiki}.
+Nachdem Fahrzeug und Regler initialisiert sind, wird im nächsten Schritt ein zu folgender Pfad generiert. Dafür steht eine Bibliothek zur Verfügung, mit deren Hilfe ein Pfad aus einfachen geometrischen Objekten - Gerade, Kreisbogen und Klothoid - erzeugt werden kann. Eine Klothoide ist ein Kreisbogen, dessen Krümmung proportional zur Länge ist und somit keinen Sprung in der Krümmung aufweist \cite{klothoidWiki}.
 
 Für Szenarien, welche die Funktionalität der MPFC als Abstandsregeltempomat (Adaptive Cruise Control - ACC) testen wird zusätzlich die Trajektorie des vorausfahrenden Fahrzeugs benötigt.
 
 \subsection{Ablauf eines Testskripts} \label{subsec:Testskript}
-Ein Testskript vereint die korrekte Initialisierung der Simulation durch Ausführung entsprechender Skripte, erstellen einer Testsuite aus einer Testklasse und Parameterwerten, Ausführung der Testklasse bzw. Simulation und die Erstellung von Testberichten. Der schematische Ablauf ist in Abbildung \ref{fig:Testskript_Ablauf} dargestellt.\medskip
+Ein Testskript vereint die korrekte Initialisierung der Simulation durch Ausführung entsprechender Skripte, Erstellen einer Testsuite aus einer Testklasse und Parameterwerten, Ausführung der Testklasse bzw. Simulation und die Erstellung von Testberichten. Der schematische Ablauf ist in Abbildung \ref{fig:Testskript_Ablauf} dargestellt.\medskip
 
-\noindent Für den Start eines Szenarios wird der Codename für das Szenario und das zu verwendende Fahrzeug benötigt. Nach Ausführung von Initialisierungsskripten werden Parametersätze generiert, worauf in \ref{subsec:Parametergenerierung} näher eingegangen wird. Als nächstes wird aus einer Umgebungsklasse eine neue Instanz geschaffen. In dieser wird eine Testsuite erstellt. Wie in \ref{sec:MatlabUnitTest} bereits erwähnt besteht eine Testsuite immer aus einer Testklasse. Eine Testklasse implementiert ein Szenario, indem es die benötigten Variablen korrekt lädt, die Simulation ausführt und die Simulationsergebnisse in ihren Testmethoden bewertet. Bei der Erstellung der Testsuite werden die vorher generierten Parameter in die Testklasse geladen.\medskip
+\noindent Für den Start eines Szenarios wird der Codename für das Szenario und das zu verwendende Fahrzeug benötigt. Nach Ausführung von Initialisierungsskripten werden Parametersätze generiert, worauf in \ref{subsec:Parametergenerierung} näher eingegangen wird. Als nächstes wird aus einer Umgebungsklasse eine neue Instanz geschaffen. In dieser wird eine Testsuite erstellt. Wie in \ref{sec:MatlabUnitTest} bereits erwähnt besteht eine Testsuite immer aus einer Testklasse. Eine Testklasse implementiert ein Szenario, indem es die benötigten Variablen korrekt lädt, die Simulation ausführt und die Simulationsergebnisse in ihren Testfällen bewertet. Bei der Erstellung der Testsuite werden die vorher generierten Parameter in die Testklasse geladen.\medskip
 
-\noindent Der konfigurierte Testrunner kann nun die Testsuite ausführen. Dabei werden die teilweise szenarien- und parameterabhängigen Key Performance Indicators für die Bewertung der Simulationsergebnisse geladen. In \ref{subsec:KPI} wird darauf näher eingegangen.\medskip
+\noindent Der konfigurierte Testrunner kann nun die Testsuite ausführen. Dabei werden die teilweise szenarien- und parameterabhängigen KPIs für die Bewertung der Simulationsergebnisse geladen. In \ref{subsec:KPI} wird darauf näher eingegangen.\medskip
 
 \noindent Aus den Ergbenisse der Tests wird schließlich automatisiert ein Testbericht in PDF-Format für den Entwickler und in XML-Format für die Darstellung in der CI Pipeline, siehe \ref{sec:CIPipeline}, generiert.
 
@@ -91,7 +84,7 @@ Ein Testskript vereint die korrekte Initialisierung der Simulation durch Ausfüh
 \end{figure}
 
 \subsection{Parametergenerierung} \label{subsec:Parametergenerierung}
-In bisherigen Testkampagnen wurden die Parameter für Szenarien manuell gewählt und in ein Skript geschrieben. Für eine größere Anzahl an Parametern bzw. eine größere Testabdeckung ist dieses Verfahren sehr aufwändig und deckt möglicherweise nicht den gesamten Parameterraum ab. Wie bereits in Kapitel \ref{sec:SoftwaretestsAutomobil} geschildert ist es nicht möglich jede Parameterkombination eines ausgewählten Szenarios abzutesten. Besitzt ein Szenario $N$ Parameter und exisitieren für jeden dieser Parameter $k$ verschiedene Werte so werden bei einer vollständigen Abtestung des Parameterraums $k^{N}$ Simulationen benötigt. Die Anzahl der Simulationen steigt exponentiell mit der Anzahl der Parameter an. Vorallem bei komplexeren Szenarien ist diese Parametrierungsstrategie nicht anwendbar.
+In bisherigen Testdurchführungen wurden die Parameter für Szenarien manuell gewählt und in ein Skript geschrieben. Für eine größere Anzahl an Parametern bzw. eine größere Testabdeckung ist dieses Verfahren sehr aufwändig und deckt möglicherweise nicht den gesamten Parameterraum ab. Wie bereits in Kapitel \ref{sec:SoftwaretestsAutomobil} geschildert ist es nicht möglich jede Parameterkombination eines ausgewählten Szenarios abzutesten. Besitzt ein Szenario $N$ Parameter und exisitieren für jeden dieser Parameter $k$ verschiedene Werte so werden bei einer vollständigen Abtestung des Parameterraums $k^{N}$ Simulationen benötigt. Die Anzahl der Simulationen steigt exponentiell mit der Anzahl der Parameter an. Vorallem bei komplexeren Szenarien ist diese Parametrierungsstrategie nicht anwendbar.
 
 Um die Anzahl der notwendigen Simulationen zu reduzieren wurden folgende Strategien angewendet:
 \begin{itemize}
@@ -104,7 +97,7 @@ Die Begrenzung des Parameterraums geschieht durch festlegen von Ober- und Unterg
 
 Die Implementierung einer Sampling Methode, wie zum Beispiel dem Monte-Carlo-Verfahren, ermöglicht eine Reduzierung der Anzahl der benötigten Simulationen. Für jeden Parameter wird aus dem jeweiligen Parameterraum ein zufälliger Wert gezogen. Dies wird für eine vorher definerte Anzahl an Samples wiederholt.
 
-Es kann allerdings nicht gewährleistet werden, dass der gesamte Parameterraum abgedeckt wird. Deshalb wird in der Implementierung das Latin Hypercube Sampling (LHS) angewendet, welches eine bessere Verteilung der Samples im Parameterraum gewährleistet, wie in Abbildung \ref{fig:Random_vs_LHS} dargestellt ist. Grundidee hierbei ist, dass jeder Parameterraum in $k$ Teilintervalle unterteilt wird. Es werden $k$ Samplesets generiert. Aus jedem Teilintervall wird dabei immer genau ein Wert zufällig gezogen, sodass nach Abschluss der gesamte Parameterraum abgedeckt ist. Aufgrund der zufälligen Ziehung innerhalb eines Intervalls ist das LHS dennoch eine Monte.Carlo Methode \cite{McKay1979}.\bigskip
+Es kann allerdings nicht gewährleistet werden, dass der gesamte Parameterraum abgedeckt wird. Deshalb wird in der Implementierung das Latin Hypercube Sampling (LHS) angewendet, welches eine bessere Verteilung der Samples im Parameterraum gewährleistet, wie in Abbildung \ref{fig:Random_vs_LHS} dargestellt ist. Grundidee hierbei ist, dass jeder Parameterraum in $k$ Teilintervalle unterteilt wird. Es werden $k$ Samplesets generiert. Aus jedem Teilintervall wird dabei immer genau ein Wert zufällig gezogen, sodass nach Abschluss der gesamte Parameterraum abgedeckt ist. Aufgrund der zufälligen Ziehung innerhalb eines Intervalls ist das LHS dennoch eine Monte-Carlo Methode \cite{McKay1979}.\bigskip
 
 \noindent Nach Ausführung dieser Funktion entstehen $k$-Samplesets, die für alle Parameter in den jeweiligen Grenzen eine gute Abdeckung des Parameterraums bieten.
 
@@ -117,13 +110,13 @@ Es kann allerdings nicht gewährleistet werden, dass der gesamte Parameterraum a
 
 \subsection{Definition von Key Performance Indicators und Testkriterien} \label{subsec:KPI}
 
-Um eine Bewertung der Simulationsergebnisse vornehmen zu können werden geeignete, zu bewertende Daten, benötigt und Grenzwerte für diese. Tritt ein Über- bzw. Unterschreiten dieser auf wird ein entsprechender Test als fehlgeschlagen definiert. Diese Kriterien werden als Key Performance Indicators (KPIs) bezeichnet.
+Um eine Bewertung der Simulationsergebnisse vornehmen zu können werden geeignete, zu bewertende Daten, benötigt und Grenzwerte für diese. Tritt ein Über- bzw. Unterschreiten dieser auf wird ein entsprechender Test als fehlgeschlagen definiert. Diese Kriterien werden als KPI bezeichnet.
 
-Ein KPI kann beispielsweise die Zeit bis zum Abbauen eines initialen lateralen Versatzes sein. Um diese zu ermitteln werden die Pfaddaten und die tatsächlihce Position des Fahrzeugs benötigt. Wird die Differenz von beiden Datensätzen nicht innerhalb einer definierten Zeitspanne abgebaut gilt der Test als fehlgeschlagen.
+Ein KPI kann beispielsweise die Zeit bis zum Abbauen eines initialen lateralen Versatzes sein. Um diese zu ermitteln werden die Pfaddaten und die tatsächliche Position des Fahrzeugs benötigt. Wird die Differenz von beiden Datensätzen nicht innerhalb einer definierten Zeitspanne abgebaut gilt der Test als fehlgeschlagen.
 
 Es existieren diverse Normen und Studien zur Bewertung von autonomen Fahrzeugen hinsichtlich Sicherheit und Komfort. In \cite{UNECE_R79} werden Bedingungen für die Zulassung von Fahrzeugen, welche in die Querführung des Fahrzeugs eingreifen definiert. \cite{ISO15622} etabliert Standards für die Funktionen und Testkriteren für ein ACC-System.
 
-\bigskip\noindent\textbf{laterale Beschleunigung}
+\bigskip\noindent\textbf{Laterale Beschleunigung}
 
 \noindent Die laterale Beschleunigung hat großen Einfluss auf den Fahrkomfort. In \cite{ISO15622} wurde das Verhalten eines durchschnittlichen Fahrers in Kurven bei verschiedenen Geschwindigkeiten analysiert, siehe \ref{fig:lateral_acceleration}. In \cite{UNECE_R79} werden für verschiedene Fahrzeugklassen in verschiedenen Geschwindigkeitszonen maximale Querbeschleunigungen definiert, siehe \ref{fig:lateral_acceleration_unece}.
 \begin{figure}
@@ -134,12 +127,12 @@ Es existieren diverse Normen und Studien zur Bewertung von autonomen Fahrzeugen 
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/lateral_acceleration.png}
+    \includegraphics[width=0.8\textwidth]{figures/3_Implementierung/lateral_acceleration.png}
     \caption{laterale Beschleunigung in Kurven eines typischen Fahrers \cite{ISO15622}}
     \label{fig:lateral_acceleration}
 \end{figure}
 
-\bigskip\noindent\textbf{longitudinale Beschleunigung}
+\bigskip\noindent\textbf{Longitudinale Beschleunigung}
 
 \noindent Diese KPI ist vorallem im Kontext des ACC von großer Relevanz. In \cite{ISO15622} sind dafür einige Grenzwerte definiert. Betrachtet werden hier keine Maximalwerte sondern der gleitende Durchschnitt über zwei Sekunden.
 \begin{figure}
@@ -173,9 +166,9 @@ Es existieren diverse Normen und Studien zur Bewertung von autonomen Fahrzeugen 
 
 \bigskip\noindent\textbf{Pfadgeschwindigkeitseinhaltung}
 
-\noindent Die Einhaltung der vorgegebenen Pfadgeschwindigkeit aus Sicht der Sicherheit und der GEsetzgebung ein wichtiges Kriterium. Eine Unterschreitung ist hier weniger kritisch zu betrachten. Eine Überschreitung sollte vom System vermieden werden. In der Testkampagne von Euro NCAP bekommt ein System, welches die Geschwindigkeit automatisch anpassen kann, die maximale Punktzahl, wenn die Geschwnidigkeit auf $\pm2\frac{km}{h}$ von einer niedrigeren Geschwindigkeitszone angepasst wurde, bevor die Frontachse diese Zone betritt \cite{NCAP2024}. Da die Simulation die Hinterachse als Referenz nutzt und darauf regelt wird dieses Kriterum dahingehend angepasst.
+\noindent Die Einhaltung der vorgegebenen Pfadgeschwindigkeit ist aus Sicht der Sicherheit und der Gesetzgebung ein wichtiges Kriterium. Eine Unterschreitung ist hier weniger kritisch zu betrachten. Eine Überschreitung sollte vom System vermieden werden. Im Testkatalog von Euro NCAP bekommt ein System, welches die Geschwindigkeit automatisch anpassen kann, die maximale Punktzahl, wenn es die Geschwindigkeit auf $\pm2\frac{km}{h}$ anpassen kann, bevor die Frontachse des Fahrzeugs eine Zone mit einer niedrigeren Pfadgeschwindigkeit betritt \cite{NCAP2024}. Da die Simulation die Hinterachse als Referenz nutzt und darauf regelt wird dieses Kriterum dahingehend angepasst.
 
-\bigskip\noindent\textbf{weitere KPIs}
+\bigskip\noindent\textbf{Weitere KPIs}
 
 \noindent Neben den oben genannten KPIs, welche in der Literatur gängige Anwendung finden und quantifiziert werden, wurden für die jeweiligen Szenarien Weitere definiert.
 
@@ -195,7 +188,7 @@ Um geeignete Szenarien für die Simulation zu erstellen, wurden verschiedene Que
     \item Normen und Richtlinien 
     \item eigene Überlegungen nach Systemanalyse
 \end{itemize}
-In \cite{ISO15622} und \cite{NCAP2024} werden verschiedene Szenarien für die Einhaltung gesetzlicher Vorschriften und ACC Systeme definiert. Aus einer intern zur Verfügung stehenden Szenariendatenbank wurden für die begrenzten Möglichkeiten der Simulationsumgebung (bspw. werden Kreuzungsszenarien zu Kurvenszenarien reduziert, da die Pfadplanung von einem übergeordneten Modul realisiert wird) weitere Szenarien entnommen. Um die Möglichkeiten und Schwierigkeiten der Simulationsumgebung zu analysieren wurden zusätzliche Szenarien implementiert. Dabei wurden auch sog. Negativtests berücksichtigt. Dabei wird ein Szenario bewusst so parametriert, dass es der Simulation nicht möglich ist die KPIs einzuhalten. In diesen Fällen ist ein fehlschlagen eines Test als positiv zu werten. Ein Test schlägt fehl, wenn die Grenzwerte nicht überschritten wurden sind. 
+Es steht intern eine Szenariendatenbank zur Verfügung. Für diese Simulation sind viele Szenarien allerdings nicht von Relevanz, da die Pfadplanung von einem übergeordneten Modul realisiert wird und bspw. Kreuzungsszenarien zu Kurvenszenarien reduziert werden. In \cite{ISO15622} und \cite{NCAP2024} werden verschiedene Szenarien für die Einhaltung gesetzlicher Vorschriften und ACC Systeme definiert. Weiterhin wurden auch Negativtests implementiert. Dabei wird ein Szenario bewusst so parametriert, dass es der Simulation nicht möglich ist die KPIs einzuhalten. In diesen Fällen ist ein fehlschlagen eines Test als positiv zu werten. Ein Test schlägt fehl, wenn die Grenzwerte nicht überschritten wurden sind. 
 
 Im folgenden werden exemplarisch einzelne Szenarien näher erläutert. 
 
@@ -204,7 +197,7 @@ Im folgenden werden exemplarisch einzelne Szenarien näher erläutert.
 
 \noindent Das Ego startet auf einer Geraden. Die Initialgeschwindigkeit ist gleich der Pfadgeschwindigkeit. Es besteht ein initialer lateraler Versatz von der Ego Position zum gewünschten Pfad.
 
-\bigskip\noindent\textbf{gewünschtes Verhalten}
+\bigskip\noindent\textbf{Gewünschtes Verhalten}
 
 \noindent Das Ego sollte den initialen Versatz abbauen und mit der Pfadgeschwindigkeit auf dem gewünschten Pfad fahren.
 
@@ -217,7 +210,7 @@ Im folgenden werden exemplarisch einzelne Szenarien näher erläutert.
     \item verwendetes MPC Parameterset 
 \end{itemize}
 
-\bigskip\noindent\textbf{abgetestete KPIs}
+\bigskip\noindent\textbf{Abgetestete KPIs}
 
 \noindent Es wurden Test für folgende KPIs mit den dazugehörigen Grenzwerten implementiert:
 \begin{itemize}
@@ -244,11 +237,11 @@ Im folgenden werden exemplarisch einzelne Szenarien näher erläutert.
     \item verwendetes MPC Parameterset
 \end{itemize}
 
-\bigskip\noindent\textbf{gewünschtes Verhalten}
+\bigskip\noindent\textbf{Gewünschtes Verhalten}
 
 \noindent Das Ego sollte die Geschwindigkeitsdifferenz beseitigen und die gewünschte Zeitlücke herstellen.
 
-\bigskip\noindent\textbf{abgetestete KPIs}
+\bigskip\noindent\textbf{Abgetestete KPIs}
 
 \noindent Es wurden Test für folgende KPIs mit den dazugehörigen Grenzwerten implementiert:
 \begin{itemize}
@@ -287,10 +280,10 @@ Im folgenden werden exemplarisch einzelne Szenarien näher erläutert.
 
 \section{Integration in die GitLab CI Pipeline} \label{sec:CIPipeline}
 Für das automatisierte Testen in der Pipeline wird eine .yaml-Datei benötigt \cite{GitLabDoks}. In dieser werden Jobs definiert. Ein Job ist die kleinste Einheit einer Pipeline und definiert eine zu erledigende Aufgabe. Eine Pipeline ist somit eine Ansammlung von zeitgleich gestarteten Jobs. Ein Job besteht mindestens aus der Ausführung eines Skriptes, ähnlich einer Kommandozeilenumgebung. Weiterhin kann definiert werden, wann ein Job gestartet wird und welche Voraussetzungen für diesen geschaffen werden müssen.
-Für jede Szenario und Fahrzeugkombination kann ein Job erstellt werden. Ein Job führt zunächst Setup-Skripte aus, damit anschließend Matlab über eine Befehlszeileneingabe gestartet werden kann. Der Ablauf ist ähnlich zu dem in Abschnitt \ref{fig:Testskript_Ablauf} beschriebem. Es wird lediglich ein anderes Initialisierungsskript verwendet, um mit den geänderten Gegebenheiten in der Pipeline umzugehen.
+Für jede Szenario und Fahrzeugkombination kann ein Job erstellt werden. Ein Job führt zunächst Setup-Skripte aus, damit anschließend Matlab\textsuperscript{\textregistered} über eine Befehlszeileneingabe gestartet werden kann. Der Ablauf ist ähnlich zu dem in Abschnitt \ref{fig:Testskript_Ablauf} beschrieben. Es wird lediglich ein anderes Initialisierungsskript verwendet, um mit den geänderten Gegebenheiten in der Pipeline umzugehen.
 
 \subsection{Darstellung der Pipeline}
-Um die Wartung der Datei und die Ausführung übersichtlicher zu gestalten wird die Funktionalität von Gitlab ausgenutzt, Jobs in einer Matrix zu parametrisieren. Dabei wird lediglich ein Job für jedes Fahrzeug erstellt. In diesem Job werden über das \textit{matrix} Kennwort die gewünschten Szenarien, welche für dieses Fahrzeug abgetestet werden sollen, hinterlegt. Die Pipeline generiert dann automatisch für jede Kombination aus Fahrzeug und Szenario einen eigenen Job an. Durch geeignete Wahl der Kennwörter der Testklasse ist es zusätzlich möglich in einem Job mehrere Testklassen/Szenarien nacheinander laufen zu lassen. Beispielsweise wird im Job "test\_Curve" sowohl ein normales Kurvenfahrtszenario als auch der in Abschnitt \ref{subsec:kurveNegativ} vorgestellte Negativtest für eine Kurve ausgeführt. Weiterhin können durch die Verwendung des \textit{parallel} Kennworts mehrere Jobs parallel ablaufen, was die Laufzeit der Pipeline enorm verkürzt. Durch diese Einstellung der Pipeline ergibt sich eine sehr Übersichtliche Darstellung im Browser (Abbildung \ref{fig:uebersicht_pipeline}). Aus dieser ist direkt zu entnehmen, welche Szenarios für welches Fahrzeug (Alice, IAVShuttle) ausgeführt wurden und welche Szenarien zu Fehlern geführt haben.
+Um die Wartung der .yaml-Datei und die Ausführung übersichtlicher zu gestalten wird die Funktionalität von Gitlab ausgenutzt, Jobs in einer Matrix zu parametrisieren. Dabei wird lediglich ein Job für jedes Fahrzeug erstellt. In diesem Job werden über den \textit{matrix} Befehl die gewünschten Szenarien, welche für dieses Fahrzeug abgetestet werden sollen, hinterlegt. Die Pipeline generiert dann automatisch für jede Kombination aus Fahrzeug und Szenario einen eigenen Job an. Durch geeignete Wahl der Testklassennamen ist es zusätzlich möglich in einem Job mehrere Testklassen/Szenarien nacheinander laufen zu lassen. Beispielsweise wird im Job "'test\_Curve"' sowohl ein normales Kurvenfahrtszenario als auch der in Abschnitt \ref{subsec:kurveNegativ} vorgestellte Negativtest für eine Kurve ausgeführt. Weiterhin können durch die Verwendung des \textit{parallel} Kennworts mehrere Jobs parallel ablaufen, was die Laufzeit der Pipeline enorm verkürzt. Durch diese Einstellung der Pipeline ergibt sich eine sehr übersichtliche Darstellung im Browser (Abbildung \ref{fig:uebersicht_pipeline}). Aus dieser ist direkt zu entnehmen, welche Szenarios für welches Fahrzeug (Alice, IAVShuttle) ausgeführt wurden und welche Szenarien zu Fehlern geführt haben.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/3_Implementierung/uebersicht_pipeline.png}
