@@ -137,14 +137,14 @@ Es existieren diverse Normen und Studien zur Bewertung von autonomen Fahrzeugen 
 \noindent Diese KPI ist vorallem im Kontext des ACC von großer Relevanz. In \cite{ISO15622} sind dafür einige Grenzwerte definiert. Betrachtet werden hier keine Maximalwerte sondern der gleitende Durchschnitt über zwei Sekunden.
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{.4\linewidth}
+    \begin{subfigure}[b]{.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/3_Implementierung/max_acceleration.png}
         \caption{maximale Beschleunigung (y) $\frac{m}{s^{3}}$}
         \label{fig:max_acceleration}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{.4\linewidth}
+    \begin{subfigure}[b]{.4\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/3_Implementierung/max_deceleration.png}
         \caption{maximales Abbremsen (y) $\frac{m}{s^{3}}$}
@@ -260,8 +260,8 @@ Im folgenden werden exemplarisch einzelne Szenarien näher erläutert.
 
 \noindent Die Parameter für dieses Szenario sind:
 \begin{itemize}
-    \item Initialgeschwindigkeit $[km\cdot h^{-1}]$: $v_{Ego} \in [0.2\cdot v_{vehicle,max}, 0.8\cdot v_{vehicle,max}]$
-    \item Kurvenradius $[m]$: $s_{radius} \in [3,r_{min,turn}]$
+    \item maximale Querbeschleunigung in der Kurve $[m\cdot s^{-2}]$: $a_{Lat} \in [1,4]$
+    \item Kurvenradius $[m]$: $s_{radius} \in [0.7,0.9]\cdot r_{min,turn}$
     \item verwendetes MPC Parameterset
 \end{itemize}
 
@@ -287,7 +287,7 @@ Um die Wartung der .yaml-Datei und die Ausführung übersichtlicher zu gestalten
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/3_Implementierung/uebersicht_pipeline.png}
-    \caption{Darstelllung der Jobs in der Gitlab CI Pipeline im Browser}
+    \caption{Darstelllung der Jobs in der Gitlab CI Pipeline im Browser. "'Alice"' und "'IAVShuttle"' sind Codenamen von Prototypenfahrezeugen}
     \label{fig:uebersicht_pipeline}
 \end{figure}
 
@@ -308,24 +308,149 @@ Auf der Startseite befindet sich eine Übersicht (Abbildung \ref{fig:testreport_
     \label{fig:failed_test}
 \end{figure}
 
-% \newpage
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_s-Error.pdf}
-% \end{figure}
+% ***************************************************************************
+%               Straight Offset Figures
+% ***************************************************************************
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/Straight_Offset/test_straight_depiction.pdf}
+    \caption{Darstellung des Szenarios: Gerade mit initialem Versatz}
+    \label{fig:test_straight_depiction}
+\end{figure}
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_v-Diff.pdf}
-% \end{figure}
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_s-Error.pdf}
+        \caption{Variation der Initialgeschwindigkeit}
+        \label{fig:varVelo_1mOffset_s-Error}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varOffset_50kmh_s-Error.pdf}
+        \caption{Variation des initialen Versatzes}
+        \label{fig:varOffset_50kmh_s-Error}
+    \end{subfigure}
+    \caption{KPI Pfadabweichung abhängig der Simulationsparameter}
+    \label{fig:Straight_Offset_s-Error}
+\end{figure}
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_a-Lat.pdf}
-% \end{figure}
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_v-Diff.pdf}
+        \caption{Variation der Initialgeschwindigkeit}
+        \label{fig:varVelo_1mOffset_v-Diff}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varOffset_50kmh_v-Diff.pdf}
+        \caption{Variation des initialen Versatzes}
+        \label{fig:varOffset_50kmh_v-Diff}
+    \end{subfigure}
+    \caption{KPI Geschwindigkeitsabweichung abhängig der Simulationsparameter}
+    \label{fig:Straight_Offset_v-Diff}
+\end{figure}
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_j-Lat.pdf}
-% \end{figure}
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_a-Lat.pdf}
+        \caption{Variation der Initialgeschwindigkeit}
+        \label{fig:varVelo_1mOffset_a-Lat}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varOffset_50kmh_a-Lat.pdf}
+        \caption{Variation des initialen Versatzes}
+        \label{fig:varOffset_50kmh_a-Lat}
+    \end{subfigure}
+    \caption{KPI laterale Beschleunigung abhängig der Simulationsparameter}
+    \label{fig:Straight_Offset_a-Lat}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_j-Lat.pdf}
+        \caption{Variation der Initialgeschwindigkeit}
+        \label{fig:varVelo_1mOffset_j-Lat}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varOffset_50kmh_j-Lat.pdf}
+        \caption{Variation des initialen Versatzes}
+        \label{fig:varOffset_50kmh_j-Lat}
+    \end{subfigure}
+    \caption{KPI lateraler Ruck abhängig der Simulationsparameter}
+    \label{fig:Straight_Offset_j-Lat}
+\end{figure}
+
+% ***************************************************************************
+%               ACC Velocity Constant Figures
+% ***************************************************************************
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/test_ACC_Vel_Const_depiction.pdf}
+    \caption{Darstellung des Szenarios: ACC mit konstanter Objektgeschwindigkeit}
+    \label{fig:test_ACC_Vel_Const_depiction}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/ACC_Vel_Const_s-Diff.pdf}
+    \caption{KPI Distanzfehler bei unterschiedlicher Parametrierung}
+    \label{fig:ACC_Vel_Const_s-Diff}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/ACC_Vel_Const_v-Diff.pdf}
+    \caption{KPI Geschwindigkeitsdifferenz bei unterschiedlicher Parametrierung}
+    \label{fig:ACC_Vel_Const_v-Diff}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/ACC_Vel_Const_a-Long.pdf}
+    \caption{KPI longitudinale Beschleunigung bei unterschiedlicher Parametrierung}
+    \label{fig:ACC_Vel_Const_a-Long}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/ACC_Vel_Const_j-Long.pdf}
+    \caption{KPI longitudinaler Ruck bei unterschiedlicher Parametrierung}
+    \label{fig:ACC_Vel_Const_j-Long}
+\end{figure}
+
+% ***************************************************************************
+%               Curve Negative
+% ***************************************************************************
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/Curve_negative/test_curve_negative_depiction.pdf}
+    \caption{Darstellung des Szenarios: Kurvenfahrt negativ}
+    \label{fig:test_curve_negative_depiction}
+\end{figure}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/Curve_negative/Curve_negative_s-Error.pdf}
+    \caption{KPI Pfadabweichung bei verschiedenen Kurvenradien}
+    \label{fig:Curve_negative_s-Error}
+\end{figure}
