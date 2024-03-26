@@ -11,7 +11,7 @@ Um die Simulationsergebnisse bewerten zu können, sollen geeignete Kriterien fes
 
 \section{Simulationsumgebung} \label{sec:Simulationsumgebung}
 Die Simulationsumgebung und der Regelungsalgorithmus sind bereits in vorherigen Entwicklungsprojekten bei der IAV entstanden und sind in MATLAB\textsuperscript{\textregistered}/Simulink implementiert. Aus den Streckeninformationen wird ein gewünschter Pfad mit einer Zielgeschwindigkeit generiert. Abbildung \ref{fig:Simulation_Strecke} zeigt den generierte Live-Plot, welcher bei Start der Simulation das Fahrzeug auf der Strecke darstellt.
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/3_Implementierung/simulationsumgebung.pdf}
     \caption{Beispiel einer komplexen Simulationsstrecke}
@@ -31,7 +31,7 @@ Eine \textit{test suite} ist eine Sammlung von Testfällen, welche die gleichen 
 
 Bei klassenbasierten Tests ist es möglich, externe Parameter in die Testklasse zu laden. Diese können als Testparameter, Testinitialisierungsparameter oder Klasseninitialisierungsparameter übergeben werden. Abhängig davon, welche Parametertypen und wieviel Variationen definiert sind, werden Testfälle und die verschiedenen Setup-Methoden mehrmals ausgeführt. Eine eigene Darstellung des Ablaufs einer Testklasse ist in Abbildung \ref{fig:Testklassen_Ablauf} zu sehen. 
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\textwidth]{figures/3_Implementierung/Testklassen_Ablauf.drawio.pdf}
     \caption{Ablauf von klassenbasierten Tests}
@@ -76,7 +76,7 @@ Ein Testskript vereint die korrekte Initialisierung der Simulation durch Ausfüh
 
 \noindent Aus den Ergbenisse der Tests wird schließlich automatisiert ein Testbericht in PDF-Format für den Entwickler und in XML-Format für die Darstellung in der CI Pipeline, siehe \ref{sec:CIPipeline}, generiert.
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/3_Implementierung/Ablauf_TestSkript.drawio.pdf}
     \caption{schematischer Ablauf eines Testskripts zur Ausführung eines Szenarios}
@@ -92,7 +92,6 @@ Um die Anzahl der notwendigen Simulationen zu reduzieren wurden folgende Strateg
     \item Implementierung einer (zufälligen) Sampling Methode
     \item Diskretisierung des Parameterraums
 \end{itemize}
-
 Die Begrenzung des Parameterraums geschieht durch festlegen von Ober- und Untergrenzen für Parameterwerte. Diese Grenzen können durch das verwendete Fahrzeug gegeben sein, beispielsweise minimale Lenkradien oder Höchstgeschwindigkeiten oder durch Normen festgelegt. Beispielsweise werden in \cite{Bau2019} minimale Kurvenradien bei der Anlage von Straßen beschrieben. Noch fehlende Parametergrenzen wurden durch Testen der Funktionen der aktuellen MPFC Implementierung sinnvoll festgelegt.
 
 Die Implementierung einer Sampling Methode, wie zum Beispiel dem Monte-Carlo-Verfahren, ermöglicht eine Reduzierung der Anzahl der benötigten Simulationen. Für jeden Parameter wird aus dem jeweiligen Parameterraum ein zufälliger Wert gezogen. Dies wird für eine vorher definerte Anzahl an Samples wiederholt.
@@ -101,7 +100,7 @@ Es kann allerdings nicht gewährleistet werden, dass der gesamte Parameterraum a
 
 \noindent Nach Ausführung dieser Funktion entstehen $k$-Samplesets, die für alle Parameter in den jeweiligen Grenzen eine gute Abdeckung des Parameterraums bieten.
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/LHS_random_compare.png}
     \caption{Vergleich der Verteilung von zufälligen Sampling mit Latin Hypercube Sampling \cite{Preece2015}}
@@ -118,14 +117,32 @@ Es existieren diverse Normen und Studien zur Bewertung von autonomen Fahrzeugen 
 
 \bigskip\noindent\textbf{Laterale Beschleunigung}
 
-\noindent Die laterale Beschleunigung hat großen Einfluss auf den Fahrkomfort. In \cite{ISO15622} wurde das Verhalten eines durchschnittlichen Fahrers in Kurven bei verschiedenen Geschwindigkeiten analysiert, siehe \ref{fig:lateral_acceleration}. In \cite{UNECE_R79} werden für verschiedene Fahrzeugklassen in verschiedenen Geschwindigkeitszonen maximale Querbeschleunigungen definiert, siehe \ref{fig:lateral_acceleration_unece}.
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/querbechleunigung_unece.png}
-    \caption{Höchstwerte für laterale Beschleunigung, aufgeschlüsselt nach Fahrzeugklassen und Geschwindigkeitszonen \cite{UNECE_R79}}
-    \label{fig:lateral_acceleration_unece}
-\end{figure}
-\begin{figure}
+\noindent Die laterale Beschleunigung hat großen Einfluss auf den Fahrkomfort. In \cite{ISO15622} wurde das Verhalten eines durchschnittlichen Fahrers in Kurven bei verschiedenen Geschwindigkeiten analysiert, siehe Abbildung \ref{fig:lateral_acceleration}. In \cite{UNECE_R79} werden für verschiedene Fahrzeugklassen in verschiedenen Geschwindigkeitszonen maximale Querbeschleunigungen definiert, siehe Tabelle \ref{tab:lateral_acceleration_unece}.
+\begin{table}
+\newcolumntype{C}{>{\centering\arraybackslash}m{0.115\textwidth}}
+\centering
+\caption{Höchstwerte für laterale Beschleunigung, aufgeschlüsselt nach Fahrzeugklassen und Geschwindigkeitszonen \cite{UNECE_R79}}
+\label{tab:lateral_acceleration_unece}
+\begin{tabular}{m{0.40\textwidth}|C|C|C|C}
+    \multicolumn{5}{c}{Für Fahrzeuge der Klassen M1 und N1} \\ 
+    \hline
+    Geschwindigkeitsbereich                                    & 10-60 km/h    & > 60-100 km/h & > 100-130 km/h & > 130 km/h  \\ 
+    \hline
+    Höchstwert für die angegebene maximale Querbeschleunigung  & 3 $m/s^{3}$   & 3 $m/s^{3}$   & 3 $m/s^{3}$    & 3 $m/s^{3}$ \\
+    \hline
+    Mindestwert für die angegebene maximale Querbeschleunigung & 0 $m/s^{3}$   & 0 $m/s^{3}$   & 0 $m/s^{3}$    & 0 $m/s^{3}$ \\ 
+    \hline
+    \multicolumn{5}{c}{Für Fahrzeuge der Klassen M2, M3, N2 und N3} \\ 
+    \hline
+    Geschwindigkeitsbereich                                    & 10-30 km/h    & > 30-60 km/h  & > 60 km/h      &             \\ 
+    \hline
+    Höchstwert für die angegebene maximale Querbeschleunigung  & 2,5 $m/s^{3}$ & 2,5 $m/s^{3}$ & 2,5 $m/s^{3}$  &             \\ 
+    \hline
+    Mindestwert für die angegebene maximale Querbeschleunigung & 0 $m/s^{3}$   & 0,3 $m/s^{3}$ & 0,5 $m/s^{3}$  &             \\
+    \hline
+\end{tabular}
+\end{table}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/3_Implementierung/lateral_acceleration.png}
     \caption{laterale Beschleunigung in Kurven eines typischen Fahrers \cite{ISO15622}}
@@ -135,32 +152,34 @@ Es existieren diverse Normen und Studien zur Bewertung von autonomen Fahrzeugen 
 \bigskip\noindent\textbf{Longitudinale Beschleunigung}
 
 \noindent Diese KPI ist vorallem im Kontext des ACC von großer Relevanz. In \cite{ISO15622} sind dafür einige Grenzwerte definiert. Betrachtet werden hier keine Maximalwerte sondern der gleitende Durchschnitt über zwei Sekunden.
-\begin{figure}
+\begin{figure}[ht]
     \centering
+    \hspace*{\fill}
     \begin{subfigure}[b]{.4\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{figures/3_Implementierung/max_acceleration.png}
-        \caption{maximale Beschleunigung (y) $\frac{m}{s^{3}}$}
+        \includegraphics[width=\textwidth]{figures/3_Implementierung/max_acceleration.pdf}
+        \caption{maximale Beschleunigung}
         \label{fig:max_acceleration}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{.4\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{figures/3_Implementierung/max_deceleration.png}
-        \caption{maximales Abbremsen (y) $\frac{m}{s^{3}}$}
+        \includegraphics[width=\textwidth]{figures/3_Implementierung/max_deceleration.pdf}
+        \caption{maximale Bremsbeschleunigung}
         \label{fig:max_deceleration}
     \end{subfigure}
-    \caption{longitudinale Beschleunigung bei verschiedenen Geschwindigkeiten (x) $\frac{m}{s}$ \cite{ISO15622}}
+    \hspace*{\fill}
+    \caption{maximal zulässige longitudinale Beschleunigung, Durchschnitt über 2 s \cite{ISO15622}}
     \label{fig:iso_acceleration}
 \end{figure}
 
 \bigskip\noindent\textbf{Ruck}
 
 \noindent Ruck ist ein unerwünschtes Verhalten bei Fahrzeugen, das durch ungleichmäßige Beschleunigung und Bremsen entsteht und maßgeblich für den Komfort mitverantwortlich ist. \cite{ISO15622} definiert im ACC Kontext dafür einen Grenzwert für einen negativen longitudinalen Ruck, wie er beim Abbremsen entsteht. Im Kontext dieser Arbeit wird die Bewertung von einem positiven Ruck und der Ruck in lateraler Richtung ähnlich bewertet. In \cite{UNECE_R79} darf der gleitende Mittelwert des lateralen Rucks über eine halbe Sekunde nicht größer als $5\frac{m}{s^{3}}$ sein.
-\begin{figure}
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.4\textwidth]{figures/3_Implementierung/max_neg_jerk.png}
-    \caption{negativer Ruck (y) [$\frac{m}{s^{3}}$] bei verschiedenen Geschwindigkeiten (x) $\frac{m}{s}$ \cite{ISO15622}}
+    \includegraphics[width=0.4\textwidth]{figures/3_Implementierung/max_neg_jerk.pdf}
+    \caption{maximal zulässiger negativer Ruck, Durchschnitt über 1 s \cite{ISO15622}}
     \label{fig:neg_jerk}
 \end{figure}
 
@@ -180,110 +199,12 @@ Es existieren diverse Normen und Studien zur Bewertung von autonomen Fahrzeugen 
     \item \textbf{Distanzfehler} - Abweichung von der gewünschten Distanz zwischen dem Ego und einem Zielobjekt
 \end{itemize}
 
-\section{Vorstellung der implementierten Szenarien} \label{sec:Vorstellung_Szenarien}
-
-Um geeignete Szenarien für die Simulation zu erstellen, wurden verschiedene Quellen herangezogen:
-\begin{itemize}
-    \item betriebsinterne Szenariendatenbank
-    \item Normen und Richtlinien 
-    \item eigene Überlegungen nach Systemanalyse
-\end{itemize}
-Es steht intern eine Szenariendatenbank zur Verfügung. Für diese Simulation sind viele Szenarien allerdings nicht von Relevanz, da die Pfadplanung von einem übergeordneten Modul realisiert wird und bspw. Kreuzungsszenarien zu Kurvenszenarien reduziert werden. In \cite{ISO15622} und \cite{NCAP2024} werden verschiedene Szenarien für die Einhaltung gesetzlicher Vorschriften und ACC Systeme definiert. Weiterhin wurden auch Negativtests implementiert. Dabei wird ein Szenario bewusst so parametriert, dass es der Simulation nicht möglich ist die KPIs einzuhalten. In diesen Fällen ist ein fehlschlagen eines Test als positiv zu werten. Ein Test schlägt fehl, wenn die Grenzwerte nicht überschritten wurden sind. 
-
-Im folgenden werden exemplarisch einzelne Szenarien näher erläutert. 
-
-\subsection{Szenario: Gerade mit initialem Versatz}
-\textbf{Beschreibung}
-
-\noindent Das Ego startet auf einer Geraden. Die Initialgeschwindigkeit ist gleich der Pfadgeschwindigkeit. Es besteht ein initialer lateraler Versatz von der Ego Position zum gewünschten Pfad.
-
-\bigskip\noindent\textbf{Gewünschtes Verhalten}
-
-\noindent Das Ego sollte den initialen Versatz abbauen und mit der Pfadgeschwindigkeit auf dem gewünschten Pfad fahren.
-
-\bigskip\noindent\textbf{Parametrierung}
-
-\noindent Die Parameter für dieses Szenario sind:
-\begin{itemize}
-    \item Offset $[m]$: $s_{offset} \in [-1.5,1.5]$ 
-    \item Initialgeschwindigkeit $[km\cdot h^{-1}]$: $v_{Ego} \in [10,v_{vehicle,max}]$
-    \item verwendetes MPC Parameterset 
-\end{itemize}
-
-\bigskip\noindent\textbf{Abgetestete KPIs}
-
-\noindent Es wurden Test für folgende KPIs mit den dazugehörigen Grenzwerten implementiert:
-\begin{itemize}
-    \item \textit{laterale Beschleunigung} $[m\cdot s^{-2}]$: der Gleitende Mittelwert über eine halbe Sekunde darf den Grenzwert nicht überschreiten: $a_{Lat} < kpi_{a_{Lat}}$
-    \item \textit{longitudinale Beschleunigung} $[m\cdot s^{-2}]$: der Gleitende Mittelwert über eine halbe Sekunde darf den Grenzwert nicht überschreiten: $a_{Long} < kpi_{a_{Long}}$
-    \item \textit{lateraler Ruck} $[m\cdot s^{-3}]$: der Gleitende Mittelwert über eine halbe Sekunde darf den Grenzwert nicht überschreiten: $j_{Lat} < kpi_{j_{Lat}}$
-    \item \textit{longitudinaler Ruck} $[m\cdot s^{-3}]$: der Gleitende Mittelwert über eine halbe Sekunde darf den Grenzwert nicht überschreiten: $j_{Long} < kpi_{j_{Long}}$
-    \item \textit{Einschwingzeit} $[s]$: der laterale Versatz sollte innerhalb einer Zeit abgebaut werden: $t_{settle} < kpi_{t_{settle}}$
-    \item \textit{longitudinale Geschwindigkeit} $[m\cdot s^{-1}]$: die Geschwindigkeitsabweichung zum Pfad darf den Grenzwert nicht überschreiten: $|v_{Long} - v_{Path}| < kpi_{v_{diff}}$
-\end{itemize}
-
-\subsection{Szenario: ACC mit konstanter Objektgeschwindigkeit}
-\textbf{Beschreibung}
-
-\noindent Das Ego startet mit einer Initialgeschwindigkeit auf einer Geraden. Ein Target fährt vor dem Ego mit konstanter Geschwindigkeit. Es exisitiert eine Geschwindigkeitsdifferenz zwischen Ego und Target. Ebenfalls kann die initiale Zeitlücke abweichend von der gewünschten Zeitlücke sein.
-
-\bigskip\noindent\textbf{Parametrierung}
-
-\noindent Die Parameter für dieses Szenario sind:
-\begin{itemize}
-    \item Initialgeschwindigkeit $[km\cdot h^{-1}]$: $v_{Ego} \in [0.2\cdot v_{vehicle,max}, 0.8\cdot v_{vehicle,max}]$
-    \item Differenzgeschwindigkeit $[km\cdot h^{-1}]$: $v_{diff} \in [-0.2,0.2]\cdot v_{Ego}$
-    \item Zeitlückenabweichung $[s]$: $t_{offset} \in [-1,1] + t_{gap,desired}$
-    \item verwendetes MPC Parameterset
-\end{itemize}
-
-\bigskip\noindent\textbf{Gewünschtes Verhalten}
-
-\noindent Das Ego sollte die Geschwindigkeitsdifferenz beseitigen und die gewünschte Zeitlücke herstellen.
-
-\bigskip\noindent\textbf{Abgetestete KPIs}
-
-\noindent Es wurden Test für folgende KPIs mit den dazugehörigen Grenzwerten implementiert:
-\begin{itemize}
-    \item \textit{longitudinale Beschleunigung} $[m\cdot s^{-2}]$: der Gleitende Mittelwert über eine halbe Sekunde darf einen definierten Grenzwert nicht überschreiten: $a_{Long} < kpi_{a_{Long}}$
-    \item \textit{longitudinaler Ruck} $[m\cdot s^{-3}]$: der Gleitende Mittelwert über eine halbe Sekunde darf den Grenzwert nicht überschreiten: $j_{Long} < kpi_{j_{Long}}$
-    \item \textit{Einschwingzeit} $[s]$: der gewünschte Abstand zum Target sollte innerhalb einer definierten Zeit eingestellt werden: $t_{settle} < kpi_{t_{settle}}$
-    \item \textit{Reaktionszeit} $[s]$: der Minimalabstand zum Target soll innerhalb einer definierten Zeit hergestellt werden: $t_{reaction} < kpi_{t_{reaction}}$
-\end{itemize}
-
-\subsection{Szenario: Kurve negativ} \label{subsec:kurveNegativ}
-\textbf{Beschreibung}
-
-\noindent Das Ego startet mit einer Initialgeschwindigkeit, welche der Pfadgeschwindigkeit entspricht auf einer Geraden. An die Gerade schließt sich eine Kurve an, welche in einen Kreis endet. Der Radius des Kreises ist kleiner als der minimale Wendekreis des Fahrzeugs. 
-
-\bigskip\noindent\textbf{Parametrierung}
-
-\noindent Die Parameter für dieses Szenario sind:
-\begin{itemize}
-    \item maximale Querbeschleunigung in der Kurve $[m\cdot s^{-2}]$: $a_{Lat} \in [1,4]$
-    \item Kurvenradius $[m]$: $s_{radius} \in [0.7,0.9]\cdot r_{min,turn}$
-    \item verwendetes MPC Parameterset
-\end{itemize}
-
-\bigskip\noindent\textbf{gewünschtes Verhalten}
-
-\noindent Das Ego soll die Beschränkungen des Lenkeinschlags nicht verletzen. Dies führt dazu, dass das Fahrzeug die Kurve nicht schaffen kann und der Abstand zum gewünschten Pfad zu groß wird.
-
-\bigskip\noindent\textbf{abgetestete KPIs}
-
-\noindent Es wurden Test für folgende KPIs mit den dazugehörigen Grenzwerten implementiert:
-\begin{itemize}
-    \item \textit{laterale Ablage} $[m]$: die Abweichung des Fahrzeugs vom gewünschten Pfad muss größer sein als ein definierter Grenzwert: $s_{error,lat} > kpi_{s_{error,lat}}$
-\end{itemize}
-
-
-
 \section{Integration in die GitLab CI Pipeline} \label{sec:CIPipeline}
 Für das automatisierte Testen in der Pipeline wird eine .yaml-Datei benötigt \cite{GitLabDoks}. In dieser werden Jobs definiert. Ein Job ist die kleinste Einheit einer Pipeline und definiert eine zu erledigende Aufgabe. Eine Pipeline ist somit eine Ansammlung von zeitgleich gestarteten Jobs. Ein Job besteht mindestens aus der Ausführung eines Skriptes, ähnlich einer Kommandozeilenumgebung. Weiterhin kann definiert werden, wann ein Job gestartet wird und welche Voraussetzungen für diesen geschaffen werden müssen.
 Für jede Szenario und Fahrzeugkombination kann ein Job erstellt werden. Ein Job führt zunächst Setup-Skripte aus, damit anschließend Matlab\textsuperscript{\textregistered} über eine Befehlszeileneingabe gestartet werden kann. Der Ablauf ist ähnlich zu dem in Abschnitt \ref{fig:Testskript_Ablauf} beschrieben. Es wird lediglich ein anderes Initialisierungsskript verwendet, um mit den geänderten Gegebenheiten in der Pipeline umzugehen.
 
 \subsection{Darstellung der Pipeline}
-Um die Wartung der .yaml-Datei und die Ausführung übersichtlicher zu gestalten wird die Funktionalität von Gitlab ausgenutzt, Jobs in einer Matrix zu parametrisieren. Dabei wird lediglich ein Job für jedes Fahrzeug erstellt. In diesem Job werden über den \textit{matrix} Befehl die gewünschten Szenarien, welche für dieses Fahrzeug abgetestet werden sollen, hinterlegt. Die Pipeline generiert dann automatisch für jede Kombination aus Fahrzeug und Szenario einen eigenen Job an. Durch geeignete Wahl der Testklassennamen ist es zusätzlich möglich in einem Job mehrere Testklassen/Szenarien nacheinander laufen zu lassen. Beispielsweise wird im Job "'test\_Curve"' sowohl ein normales Kurvenfahrtszenario als auch der in Abschnitt \ref{subsec:kurveNegativ} vorgestellte Negativtest für eine Kurve ausgeführt. Weiterhin können durch die Verwendung des \textit{parallel} Kennworts mehrere Jobs parallel ablaufen, was die Laufzeit der Pipeline enorm verkürzt. Durch diese Einstellung der Pipeline ergibt sich eine sehr übersichtliche Darstellung im Browser (Abbildung \ref{fig:uebersicht_pipeline}). Aus dieser ist direkt zu entnehmen, welche Szenarios für welches Fahrzeug (Alice, IAVShuttle) ausgeführt wurden und welche Szenarien zu Fehlern geführt haben.
+Um die Wartung der .yaml-Datei und die Ausführung übersichtlicher zu gestalten wird die Funktionalität von Gitlab ausgenutzt, Jobs in einer Matrix zu parametrisieren. Dabei wird lediglich ein Job für jedes Fahrzeug erstellt. In diesem Job werden über den \textit{matrix} Befehl die gewünschten Szenarien, welche für dieses Fahrzeug abgetestet werden sollen, hinterlegt. Die Pipeline generiert dann automatisch für jede Kombination aus Fahrzeug und Szenario einen eigenen Job an. Durch geeignete Wahl der Testklassennamen ist es zusätzlich möglich in einem Job mehrere Testklassen/Szenarien nacheinander laufen zu lassen. Beispielsweise wird im Job "'test\_Curve"' sowohl ein normales Kurvenfahrtszenario als auch der in Abschnitt \ref{sec:kurveNegativ} vorgestellte Negativtest für eine Kurve ausgeführt. Weiterhin können durch die Verwendung des \textit{parallel} Kennworts mehrere Jobs parallel ablaufen, was die Laufzeit der Pipeline enorm verkürzt. Durch diese Einstellung der Pipeline ergibt sich eine sehr übersichtliche Darstellung im Browser (Abbildung \ref{fig:uebersicht_pipeline}). Aus dieser ist direkt zu entnehmen, welche Szenarios für welches Fahrzeug (Alice, IAVShuttle) ausgeführt wurden und welche Szenarien zu Fehlern geführt haben.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/3_Implementierung/uebersicht_pipeline.png}
@@ -295,162 +216,15 @@ Um die Wartung der .yaml-Datei und die Ausführung übersichtlicher zu gestalten
 Nachdem ein Szenario durchlaufen ist, werden die Testergebnisse sowohl in GitLab, als auch in einer PDF-Datei dargestellt. Dieser Testbericht wird als Artefakt des jeweiligen Jobs behalten und kann vom Entwickler herunterladen werden.
 
 Auf der Startseite befindet sich eine Übersicht (Abbildung \ref{fig:testreport_aufmacher}). Schlägt ein Test fehl gibt es einen ausführlicheren Bericht (Abbildung \ref{fig:failed_test}). Die Testdiagnose teilt dem Entwickler mit, was das Problem ist. Der Vergleich von soll KPI und tatsächlichem Ergebnis folgt darunter. Wenn es für den Test sinnvoll ist wird ebenfalls ein Plot generiert, der den zeitlichen Verlauf von relevanten Größen über die Zeitdauer der Simulation darstellt. Die Parameter des aktuellen Szenarios werden ebenfalls angegeben, um den Test lokal reproduzieren zu können.
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/testreport_aufmacher.png}
     \caption{Übersichtliche Darstellung der Testergebnisse eines Szenarios auf der ersten Seite des Testberichts}
     \label{fig:testreport_aufmacher}
 \end{figure}
-\begin{figure}
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/3_Implementierung/failed_test.png}
+    \includegraphics[width=\textwidth]{figures/3_Implementierung/failed_test.png}
     \caption{Darstellung eines fehlgeschlagenen Tests im Testbericht. Der Wert der KPI und der tatsächliche Wert werden verglichen. Ein kurzer Text gibt dem Entwickler wieder, was fehlgeschlagen ist. Wenn sinnvoll wird ein Plot mit den relevanten Daten erzeugt. Die Angabe der Simulationsparameter genutzt werden um diese eine Simulation lokal zu wiederholen.}
     \label{fig:failed_test}
-\end{figure}
-
-
-% ***************************************************************************
-%               Straight Offset Figures
-% ***************************************************************************
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/Straight_Offset/test_straight_depiction.pdf}
-    \caption{Darstellung des Szenarios: Gerade mit initialem Versatz}
-    \label{fig:test_straight_depiction}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_s-Error.pdf}
-        \caption{Variation der Initialgeschwindigkeit}
-        \label{fig:varVelo_1mOffset_s-Error}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varOffset_50kmh_s-Error.pdf}
-        \caption{Variation des initialen Versatzes}
-        \label{fig:varOffset_50kmh_s-Error}
-    \end{subfigure}
-    \caption{KPI Pfadabweichung abhängig der Simulationsparameter}
-    \label{fig:Straight_Offset_s-Error}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_v-Diff.pdf}
-        \caption{Variation der Initialgeschwindigkeit}
-        \label{fig:varVelo_1mOffset_v-Diff}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varOffset_50kmh_v-Diff.pdf}
-        \caption{Variation des initialen Versatzes}
-        \label{fig:varOffset_50kmh_v-Diff}
-    \end{subfigure}
-    \caption{KPI Geschwindigkeitsabweichung abhängig der Simulationsparameter}
-    \label{fig:Straight_Offset_v-Diff}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_a-Lat.pdf}
-        \caption{Variation der Initialgeschwindigkeit}
-        \label{fig:varVelo_1mOffset_a-Lat}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varOffset_50kmh_a-Lat.pdf}
-        \caption{Variation des initialen Versatzes}
-        \label{fig:varOffset_50kmh_a-Lat}
-    \end{subfigure}
-    \caption{KPI laterale Beschleunigung abhängig der Simulationsparameter}
-    \label{fig:Straight_Offset_a-Lat}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varVelo_1mOffset_j-Lat.pdf}
-        \caption{Variation der Initialgeschwindigkeit}
-        \label{fig:varVelo_1mOffset_j-Lat}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/3_Implementierung/Straight_Offset/varOffset_50kmh_j-Lat.pdf}
-        \caption{Variation des initialen Versatzes}
-        \label{fig:varOffset_50kmh_j-Lat}
-    \end{subfigure}
-    \caption{KPI lateraler Ruck abhängig der Simulationsparameter}
-    \label{fig:Straight_Offset_j-Lat}
-\end{figure}
-
-% ***************************************************************************
-%               ACC Velocity Constant Figures
-% ***************************************************************************
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/test_ACC_Vel_Const_depiction.pdf}
-    \caption{Darstellung des Szenarios: ACC mit konstanter Objektgeschwindigkeit}
-    \label{fig:test_ACC_Vel_Const_depiction}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/ACC_Vel_Const_s-Diff.pdf}
-    \caption{KPI Distanzfehler bei unterschiedlicher Parametrierung}
-    \label{fig:ACC_Vel_Const_s-Diff}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/ACC_Vel_Const_v-Diff.pdf}
-    \caption{KPI Geschwindigkeitsdifferenz bei unterschiedlicher Parametrierung}
-    \label{fig:ACC_Vel_Const_v-Diff}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/ACC_Vel_Const_a-Long.pdf}
-    \caption{KPI longitudinale Beschleunigung bei unterschiedlicher Parametrierung}
-    \label{fig:ACC_Vel_Const_a-Long}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/ACC_Vel_Const_j-Long.pdf}
-    \caption{KPI longitudinaler Ruck bei unterschiedlicher Parametrierung}
-    \label{fig:ACC_Vel_Const_j-Long}
-\end{figure}
-
-% ***************************************************************************
-%               Curve Negative
-% ***************************************************************************
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/Curve_negative/test_curve_negative_depiction.pdf}
-    \caption{Darstellung des Szenarios: Kurvenfahrt negativ}
-    \label{fig:test_curve_negative_depiction}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/Curve_negative/Curve_negative_s-Error.pdf}
-    \caption{KPI Pfadabweichung bei verschiedenen Kurvenradien}
-    \label{fig:Curve_negative_s-Error}
 \end{figure}
