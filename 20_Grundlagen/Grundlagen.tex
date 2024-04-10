@@ -37,16 +37,16 @@ Um Szenarien zu beschreiben und in eine Datenbank einordnen zu können müssen d
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/2_Grundlagen/layer_model.png}
-    \caption{Einteilung des Informationsgehalts eines Szenarios nach Schichten \cite{Bagschik2018}}
+    \caption{Einteilung eines Szenarios nach Informationsgehalt \cite{Bagschik2018}}
     \label{fig:layer_model}
 \end{figure}
 Die erste Ebene definiert dabei grundlegende Eigenschaften der Straße, wie etwa deren Beschaffenheit oder Grenzen. Die nächste Ebene fügt Infrastrukturobjekte wie Straßenschilder hinzu. Ebene drei enthält Informationen über temporäre Veränderungen der darunterliegenden Ebenen. Ebene vier fügt einem Szenario statische und dynamische Objekte wie andere Verkehrsteilnehmer und Manöverplanung hinzu. Zum Schluss können noch Umweltfaktoren eingefügt werden \cite{Bagschik2018}.
 
-Eine weitere Klassifizierungsmöglichkeit ist nach dem Detailgrad, wie es in Abbildung \ref{fig:scenario_level} \cite{Nalic2020}\cite{menzel2018scenarios}. Zunächst werden funktionale Szenarios beschrieben. Diese können einfach mit Worten beschrieben werden und enthalten noch keine Information über die Parameter. In einem ersten Abstrahierungsschritt werden diese zu logischen Szenarios. Hier wurden Parameter identifiziert und Grenzen für diese festgelegt. Um ein konkretes Szenario zu erhalten muss für jeden Parameter ein Wert ausgewählt werden. Theoretisch ermöglicht dies eine unendliche Anzahl an konkreten Szenarios, welche aus lediglich einem funktionalen Szenario erstellt werden können. Selbst bei rein simulativen Tests ist das nicht umsetzbar und muss reduziert werden \cite{menzel2018scenarios}.
+Eine weitere Klassifizierungsmöglichkeit ist nach dem Abstraktionsgrad, wie in Abbildung \ref{fig:scenario_level} \cite{Nalic2020}\cite{menzel2018scenarios}. Zunächst werden funktionale Szenarios beschrieben. Diese können einfach mit Worten beschrieben werden und enthalten noch keine Information über die Parameter. In einem ersten Abstrahierungsschritt werden diese zu logischen Szenarios. Hier wurden Parameter identifiziert und Grenzen für diese festgelegt. Um ein konkretes Szenario zu erhalten muss für jeden Parameter ein Wert ausgewählt werden. Theoretisch ermöglicht dies eine unendliche Anzahl an konkreten Szenarios, welche aus lediglich einem funktionalen Szenario erstellt werden können. Selbst bei rein simulativen Tests ist das nicht umsetzbar und muss reduziert werden \cite{menzel2018scenarios}.
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/2_Grundlagen/scenario_level.png}
-    \caption{Erhöhung der Anzahl an Szenarios mit zunehmener Konkretisierung der Szenarien \cite{menzel2018scenarios}}
+    \caption{Einteilung eines Szenarios nach Abstraktionsgrad \cite{menzel2018scenarios}}
     \label{fig:scenario_level}
 \end{figure}
 

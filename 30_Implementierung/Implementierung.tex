@@ -10,7 +10,8 @@ Es sollen Szenarien gefunden und parametriert werden, welche für den Regelungsa
 Um die Simulationsergebnisse bewerten zu können, sollen geeignete Kriterien festgelegt werden, die sowohl Sicherheit als auch Komfort der gefundenen Lösung bewerten. Aus den Testergebnissen soll ein Bericht erstellt werden, welcher dem Entwickler übersichtlich mögliche Fehlschläge aufzeigt.
 
 \section{Simulationsumgebung} \label{sec:Simulationsumgebung}
-Die Simulationsumgebung und der Regelungsalgorithmus sind bereits in vorherigen Entwicklungsprojekten bei der IAV entstanden und sind in MATLAB\textsuperscript{\textregistered}/Simulink implementiert. Aus den Streckeninformationen wird ein gewünschter Pfad mit einer Zielgeschwindigkeit generiert. Abbildung \ref{fig:Simulation_Strecke} zeigt den generierte Live-Plot, welcher bei Start der Simulation das Fahrzeug auf der Strecke darstellt.
+Die Simulationsumgebung und der Regelungsalgorithmus sind bereits in vorherigen Entwicklungsprojekten bei der IAV entstanden und sind in MATLAB\textsuperscript{\textregistered}/Simulink implementiert. Aus den Streckeninformationen wird ein gewünschter Pfad mit einer Zielgeschwindigkeit generiert und straßenähnlich dargestellt. Darauf wird die tatsächliche und prädizierte Bewegung des Fahrzeugs abgebildet.  
+In Abbildung \ref{fig:Simulation_Strecke} ist dieser generierte Live-Plot zu sehen.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/3_Implementierung/simulationsumgebung.pdf}
@@ -208,7 +209,7 @@ Um die Wartung der .yaml-Datei und die Ausführung übersichtlicher zu gestalten
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/3_Implementierung/uebersicht_pipeline.png}
-    \caption{Darstelllung der Jobs in der Gitlab CI Pipeline im Browser. "'Alice"' und "'IAVShuttle"' sind Codenamen von Prototypenfahrezeugen}
+    \caption[Darstellung der Jobs in der GitLab CI Pipeline]{Darstelllung der Jobs in der Gitlab CI Pipeline im Browser. "'Alice"' und "'IAVShuttle"' sind Codenamen von Prototypenfahrezeugen}
     \label{fig:uebersicht_pipeline}
 \end{figure}
 
@@ -219,12 +220,12 @@ Auf der Startseite befindet sich eine Übersicht (Abbildung \ref{fig:testreport_
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/testreport_aufmacher.png}
-    \caption{Übersichtliche Darstellung der Testergebnisse eines Szenarios auf der ersten Seite des Testberichts}
+    \caption[Übersichtliche Darstellung der Testergebnisse eines Szenarios]{Übersichtliche Darstellung der Testergebnisse eines Szenarios auf der ersten Seite des Testberichts}
     \label{fig:testreport_aufmacher}
 \end{figure}
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/3_Implementierung/failed_test.png}
-    \caption{Darstellung eines fehlgeschlagenen Tests im Testbericht. Der Wert der KPI und der tatsächliche Wert werden verglichen. Ein kurzer Text gibt dem Entwickler wieder, was fehlgeschlagen ist. Wenn sinnvoll wird ein Plot mit den relevanten Daten erzeugt. Die Angabe der Simulationsparameter genutzt werden um diese eine Simulation lokal zu wiederholen.}
+    \caption[Darstellung eines fehlgeschlagenen Tests im Testbericht]{Darstellung eines fehlgeschlagenen Tests im Testbericht. Der Wert der KPI und der tatsächliche Wert werden verglichen. Ein kurzer Text gibt dem Entwickler wieder, was fehlgeschlagen ist. Wenn sinnvoll wird ein Plot mit den relevanten Daten erzeugt. Die Angabe der Simulationsparameter genutzt werden um diese eine Simulation lokal zu wiederholen.}
     \label{fig:failed_test}
 \end{figure}
