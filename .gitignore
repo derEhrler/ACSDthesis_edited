@@ -36,3 +36,6 @@
 ## JabRef
 *.bak
 *.sav.tmp
+
+## Matlab
+*.mat
