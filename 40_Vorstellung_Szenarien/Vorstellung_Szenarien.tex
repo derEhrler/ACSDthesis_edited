@@ -54,7 +54,7 @@ Es wurden Test für folgende KPIs mit den dazugehörigen Grenzwerten implementie
 
 \medskip\noindent\textbf{longitudinale Geschwindigkeit:} die Geschwindigkeitsabweichung zum Pfad darf den Grenzwert nicht überschreiten: $|v_{Long} - v_{Path}| < kpi_{v_{diff}}$
 
-\noindent Die Pfadgeschwindigkeit ist in der Implementierung der MPFC ein Optimierungsparameter. Ein verhindern des Überschreitens der Pfadgeschwindigkeit ist nicht garantiert. Um den Versatz möglichst schnell abzubauen beschleunigt der Regler das Fahrzeug. Dies ist vorallem bei niedrigeren Geschwindigkeiten und höheren Versätzen zu beobachten, siehe Abbildungen \ref{fig:Straight_Offset_s-Error}.   
+\noindent Die Pfadgeschwindigkeit ist in der Implementierung der MPFC ein Optimierungsparameter. Ein Verhindern des Überschreitens der Pfadgeschwindigkeit ist nicht garantiert. Um den Versatz möglichst schnell abzubauen beschleunigt der Regler das Fahrzeug. Dies ist vorallem bei niedrigeren Geschwindigkeiten und höheren Versätzen zu beobachten, siehe Abbildungen \ref{fig:Straight_Offset_s-Error}.   
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{.49\textwidth}
@@ -149,7 +149,7 @@ Es wurden Test für folgende KPIs mit den dazugehörigen Grenzwerten implementie
 \end{figure}
 
 \section{Szenario: ACC mit konstanter Objektgeschwindigkeit} \label{sec:acc_vel_const}
-Das Ego startet mit einer Initialgeschwindigkeit auf einer Geraden. Ein Target fährt vor dem Ego mit konstanter Geschwindigkeit. Es exisitiert eine Geschwindigkeitsdifferenz zwischen Ego und Target. Ebenfalls kann die initiale Zeitlücke abweichend von der gewünschten Zeitlücke sein. Das Ego sollte die Geschwindigkeitsdifferenz beseitigen und die gewünschte Zeitlücke herstellen.
+Das Ego startet mit einer Initialgeschwindigkeit auf einer Geraden. Ein Target fährt vor dem Ego mit konstanter Geschwindigkeit. Es exisitiert eine Geschwindigkeitsdifferenz zwischen Ego und Target. Ebenfalls kann die initiale Zeitlücke abweichend von der gewünschten Zeitlücke sein. Das Ego sollte die Geschwindigkeitsdifferenz beseitigen und die gewünschte Zeitlücke herstellen. Der rote Kegel stellt den Bereich dar, in welchem das Ego das Target als ACC-Objekt erkennt und darauf regelt. 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/3_Implementierung/ACC_Vel_Const/test_ACC_Vel_Const_depiction.pdf}

@@ -17,7 +17,8 @@ Der Ablauf einer modellprädiktiven Regelung, wie in Abbildung \ref{fig:MPC} zu 
     \item Das erste Element des Stellhorizonts wird auf das System angewendet. Stell- und Prädiktionshorizont verschieben sich um einen Zeitschritt in die Zukunft. Der Zyklus beginnt von vorn. 
 \end{enumerate}
 \subsection{Pfadfolgeregelung}
-Die Implementierung der Pfadfolgeregelung für die in diesem Praktikum eine Teststrategie implementiert werden soll, ist in Abbildung \ref{fig:MPFC_Schema} dargestellt. Als Eingänge dienen der MPFC eine Sollgeschwindigkeit, Pfaddaten, Fahrzeugzustände, vorgegebene Beschränkungen und ein Fahrzeugmodell. Daraus werden eine Sollbeschleunigung und eine Solllenkradwinkelgeschwindigkeit berechnet.
+
+Die Struktur der Pfadfolgeregelung, für die in diesem Praktikum eine Teststrategie implementiert werden soll, ist in Abbildung \ref{fig:MPFC_Schema} dargestellt. Als Eingänge dienen der MPFC eine Sollgeschwindigkeit, Pfaddaten, Fahrzeugzustände, vorgegebene Beschränkungen und ein Fahrzeugmodell. Daraus werden eine Sollbeschleunigung und eine Solllenkradwinkelgeschwindigkeit berechnet.
 
 Die Grundidee der Pfadfolgeregelung ist in \cite{Faulwasser2009} beschrieben: Der Regler soll einem vorgegebenem Pfad möglichst gut folgen. Die Geschwindigkeit entlang des Pfades wird, im Gegensatz zu trajektorienbasierten Ansätzen, bei denen die Geschwindigkeit an jedem Punkt des Pfades vorgegeben ist und eingeregelt werden soll, vom Regler selbst festgelegt. Durch die Implementierung wird ein konvergieren des Pfades auf den Sollpfad sichergestellt \cite{ritschel2019}.
 
@@ -42,7 +43,7 @@ Um Szenarien zu beschreiben und in eine Datenbank einordnen zu können müssen d
 \end{figure}
 Die erste Ebene definiert dabei grundlegende Eigenschaften der Straße, wie etwa deren Beschaffenheit oder Grenzen. Die nächste Ebene fügt Infrastrukturobjekte wie Straßenschilder hinzu. Ebene drei enthält Informationen über temporäre Veränderungen der darunterliegenden Ebenen. Ebene vier fügt einem Szenario statische und dynamische Objekte wie andere Verkehrsteilnehmer und Manöverplanung hinzu. Zum Schluss können noch Umweltfaktoren eingefügt werden \cite{Bagschik2018}.
 
-Eine weitere Klassifizierungsmöglichkeit ist nach dem Abstraktionsgrad, wie in Abbildung \ref{fig:scenario_level} \cite{Nalic2020}\cite{menzel2018scenarios}. Zunächst werden funktionale Szenarios beschrieben. Diese können einfach mit Worten beschrieben werden und enthalten noch keine Information über die Parameter. In einem ersten Abstrahierungsschritt werden diese zu logischen Szenarios. Hier wurden Parameter identifiziert und Grenzen für diese festgelegt. Um ein konkretes Szenario zu erhalten muss für jeden Parameter ein Wert ausgewählt werden. Theoretisch ermöglicht dies eine unendliche Anzahl an konkreten Szenarios, welche aus lediglich einem funktionalen Szenario erstellt werden können. Selbst bei rein simulativen Tests ist das nicht umsetzbar und muss reduziert werden \cite{menzel2018scenarios}.
+Eine weitere Klassifizierungsmöglichkeit ist nach dem Abstraktionsgrad, wie in Abbildung \ref{fig:scenario_level} zu sehen ist \cite{Nalic2020}\cite{menzel2018scenarios}. Zunächst werden funktionale Szenarios beschrieben. Diese können einfach mit Worten beschrieben werden und enthalten noch keine Information über die Parameter. In einem ersten Abstrahierungsschritt werden diese zu logischen Szenarios. Hier wurden Parameter identifiziert und Grenzen für diese festgelegt. Um ein konkretes Szenario zu erhalten muss für jeden Parameter ein Wert ausgewählt werden. Theoretisch ermöglicht dies eine unendliche Anzahl an konkreten Szenarios, welche aus lediglich einem funktionalen Szenario erstellt werden können. Selbst bei rein simulativen Tests ist das nicht umsetzbar und muss reduziert werden \cite{menzel2018scenarios}.
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/2_Grundlagen/scenario_level.pdf}
@@ -50,17 +51,22 @@ Eine weitere Klassifizierungsmöglichkeit ist nach dem Abstraktionsgrad, wie in 
     \label{fig:scenario_level}
 \end{figure}
 
-\section{Softwartests und CI/CD} \label{sec:CICD}
+\section{Softwartests und Unit-Tests} \label{sec:CICD}
 
-Ein geeignetes Testmanagement erhöht die Qualität einer Software maßgeblich. Ein Testprozess läuft in der Regel nach dem in Abbildung \ref{fig:testprozess} dargestellten Schema ab. Für den Testprozess exitisieren die Normen IEEE 829 und ISO-Standard 9126. Das International Software Testing Qualifications Board (ISTQB) arbeitet auf Grundlage dieser Normen an der Standardisierung von Systemtests \cite{witte2019testmanagement}.
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\textwidth]{figures/2_Grundlagen/testprozess.png}
-    \caption{Ablauf eines Testprozesses \cite{witte2019testmanagement}}
-    \label{fig:testprozess}
-\end{figure}
+% Ein geeignetes Testmanagement erhöht die Qualität einer Software maßgeblich. Ein Testprozess läuft in der Regel nach dem in Abbildung \ref{fig:testprozess} dargestellten Schema ab. Für den Testprozess exitisieren die Normen IEEE 829 und ISO-Standard 9126. Das International Software Testing Qualifications Board (ISTQB) arbeitet auf Grundlage dieser Normen an der Standardisierung von Systemtests \cite{witte2019testmanagement}.
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{figures/2_Grundlagen/testprozess.png}
+%     \caption{Ablauf eines Testprozesses \cite{witte2019testmanagement}}
+%     \label{fig:testprozess}
+% \end{figure}
 
-Eine Möglichkeit Testprozesse Durchzuführen steckt hinter den Schlagworten Continuous Integration (CI) und Continuous Deployment (CD). Darunter versteht sich ein Prozess zum entwickeln, testen und freigeben von Software unter Nutzung von Versionsverwaltungssoftware wie er in Abbildung \ref{fig:ci-cd-flow-desktop} dargestellt ist. Wenn ein Entwickler in einem Softwaremodul Änderungen veranlasst, läuft ein automatischer Testprozess ab. Dieser ist typischerweise in Stages unterteilt, in Abbildung \ref{fig:ci-cd-flow-desktop} sind diese BUILD, TEST, MERGE. Werden darin keine Fehler in der Software gefunden werden die Änderungen eines Moduls zusammen mit den Änderungen an allen Modulen zusammengefasst und und somit die gesamte Software auf den aktuellen Stand gebracht (Continuous Delivery). Werden für die Gesamtsoftware ebenfalls keine Fehler gefunden kann eine neue Softwareversion zum Kunden gebracht werden (Continuous Deployment). Dieser Testprozess läuft in der Regel automatisch ab und veringert die Anzahl an Fehlern in Software \cite{redhat2024}.
+%%%
+% Unit Test Zeug
+% Witte: S. 22 Testnormen: kurz ausführen, später verwenden
+%%%
+
+Ein geeignetes Testmanagement erhöht die Qualität einer Software maßgeblich, indem mehr Fehler im Entwicklungsprozess entdeckt werden und beseitigt werden können. Eine Möglichkeit Testprozesse durchzuführen steckt hinter den Schlagworten Continuous Integration (CI) und Continuous Deployment (CD). Darunter versteht sich ein Prozess zum entwickeln, testen und freigeben von Software unter Nutzung von Versionsverwaltungssoftware wie er in Abbildung \ref{fig:ci-cd-flow-desktop} dargestellt ist. Wenn ein Entwickler in einem Softwaremodul Änderungen veranlasst, läuft ein automatischer Testprozess ab. Dieser ist typischerweise in Stages unterteilt, in Abbildung \ref{fig:ci-cd-flow-desktop} sind diese BUILD, TEST, MERGE. Werden darin keine Fehler in der Software gefunden werden die Änderungen eines Moduls zusammen mit den Änderungen an allen Modulen zusammengefasst und und somit die gesamte Software auf den aktuellen Stand gebracht (Continuous Delivery). Werden für die Gesamtsoftware ebenfalls keine Fehler gefunden kann eine neue Softwareversion zum Kunden gebracht werden (Continuous Deployment). Dieser Testprozess läuft in der Regel automatisch ab und veringert die Anzahl an Fehlern in Software \cite{redhat2024}.
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/2_Grundlagen/ci-cd-flow-desktop.png}
