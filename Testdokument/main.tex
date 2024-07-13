@@ -1,0 +1,42 @@
+
+\documentclass[twoside, paper=a4, fontsize=12pt, german, open=right, colorpdf, dvipsnames]{scrreprt} 
+
+\input{test_ACSDthesis-config} % Includes the file which contains all the document configurations and packages - make sure to edit this file
+
+\addbibresource{test_thesis.bib} % The file housing your bibliography
+
+\thesistype{Praktikumsbericht} 
+\usetikzlibrary{patterns}
+\finaldate{14. März 2024}
+\title{Entwicklung und Implementierung einer automatisierten szenariobasierten Unit-Test Strategie für einen modellprädiktiven Pfadfolgeregler in einer GitLab CI Pipeline} % Titel der Arbeit
+\subtitle{vorgelegt von} % Untertitel (falls vorhanden)
+\author{Georg Ehrler} % Name des bearbeitenden Studenten
+
+\matrikel{521446}
+\course{Energie- und Automatisierungssysteme}
+\dateofbirth{07.07.1999} % Geburtstag des bearbeitenden Studenten
+\placeofbirth{Zwickau} % Geburtsort des bearbeitenden Studenten
+\dateofsubmission{22.02.2022} 
+\dateofdefence{33.03.3033} 
+\supervisor{Francisco Moreno, M.Sc.} % Betreuer #1
+\supervisor{Robert Ritschel, M.Sc. (IAV)} % Betreuer #2 (weitere Betreuer mit \supervisor{...} hinzufügen)
+\examiner{Prof. Dr.\,-Ing. habil. Stefan Streif} % Prüfer (i.d.R. Prof. habil. Dr.\,-Ing. Stefan Streif); Für Dissertation: Gutachter (mehrere Gutachter möglich wie bei supervisor)
+\company{IAV GmbH} % (optional) Name der Firma; Logo in figures/company_logo.pdf
+\sloppy
+
+\begin{document}
+
+\frenchspacing % Reduces space after periods to make text more compact
+\raggedbottom % Makes all pages the height of the text on that page
+\pagenumbering{roman} % Roman page numbering prior to the start of the thesis content (i, ii, iii, etc)
+\pagestyle{plain} % Suppress headers for the pre-content pages
+\maketitle
+\pagenumbering{Roman}
+\pagestyle{scrheadings} % Show chapter titles as headings
+\pagenumbering{arabic} % Arabic page numbering for thesis content (1, 2, 3, etc)
+\cleardoublepage % Avoids problems with pdfbookmark
+\renewcommand*{\arraystretch}{1}
+
+\include{testpages}
+
+\end{document}

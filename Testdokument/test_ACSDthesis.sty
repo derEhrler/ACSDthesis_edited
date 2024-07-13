@@ -1,0 +1,791 @@
+% ********************************************************************
+% ACSDthesis.sty
+% v2022
+%
+% ********************************************************************  
+% Important:
+%
+% This style can also be used without the thesis template.
+% It works with both LaTeX and PDFLaTeX now. XeLaTeX should also work.
+%
+% * You must not use "u etc. in strings/commands that will be spaced out 
+%   (use \"u or real umlauts instead)
+% * There is a problem with the case of math text in part-,
+%   chapter-, and section titles (either the case or the spacing breaks). 
+%   => this can be fixed by using pdftex 1.40 or later and enabling the
+%      option pdfspacing of this package
+%
+% ********************************************************************  
+\NeedsTeXFormat{LaTeX2e}%[2015/01/01] % fixed via latexrelease package, see below
+\ProvidesPackage{ACSDthesis}[2018/02/15 v1.0 Style file for ACSD theses.]
+
+\RequirePackage{ifthen}
+\newboolean{@tocaligned} % the left column of the toc will be aligned (no indention)
+\newboolean{@drafting} % print version information on pages
+\newboolean{@eulermath} % use awesome Euler fonts for math
+\newboolean{@parts} % use part division for the text
+\newboolean{@listings} % load listings package (if not already) and setup LoL
+\newboolean{@floatperchapter} % numbering per chapter for all floats (i.e., Figure 1.1)
+\newboolean{@german}
+\newboolean{@oneside}
+\newboolean{@colorpdf}
+\newboolean{@dissertation}
+\newboolean{@finalversion}
+    
+% ********************************************************************
+% Options (declared at the very top)
+% ******************************************************************** 
+\DeclareOption{tocaligned}{\setboolean{@tocaligned}{true}}
+\DeclareOption{drafting}{\setboolean{@drafting}{true}}
+\DeclareOption{listsseparated}{\setboolean{@listsseparated}{true}}
+
+%\DeclareOption{subfig}{\setboolean{@subfig}{true}}
+\DeclareOption{eulermath}{\setboolean{@eulermath}{true}} 
+\DeclareOption{parts}{\setboolean{@parts}{true}} 
+\DeclareOption{listings}{\setboolean{@listings}{true}}
+\DeclareOption{floatperchapter}{\setboolean{@floatperchapter}{true}}
+\DeclareOption{german}{\setboolean{@german}{true}}
+\DeclareOption{english}{\setboolean{@german}{false}}
+\DeclareOption{oneside}{\setboolean{@oneside}{true}}
+\DeclareOption{colorpdf}{\setboolean{@colorpdf}{true}}
+\DeclareOption{dissertation}{\setboolean{@dissertation}{true}}
+\DeclareOption{final}{\setboolean{@finalversion}{true}}
+\ProcessOptions\relax
+
+% listings-related stuff
+\ifthenelse{\boolean{@listings}}%
+    {\@ifpackageloaded{listings}%
+        {\relax}{\RequirePackage{listings}}%
+    }{\relax}%
+
+% language related stuff
+\ifthenelse{\boolean{@german}}%
+   {\PassOptionsToPackage{ngerman}{babel}  % Change this to your language(s)
+	\RequirePackage{babel}
+	\selectlanguage{ngerman}}
+   {\PassOptionsToPackage{english}{babel}  % Change this to your language(s)
+	\RequirePackage{babel}
+	\selectlanguage{english}}
+
+\PassOptionsToPackage{dottedtoc}{scrreprt}  % Change this to your language(s)
+
+% ********************************************************************                
+% Colors
+% ********************************************************************
+\PassOptionsToPackage{dvipsnames}{xcolor}
+\RequirePackage{xcolor} % [dvipsnames] 
+
+\definecolor{STY_ACSD_BLK}{rgb}{0,0,0}
+
+\ifthenelse{\boolean{@colorpdf}}
+	{\definecolor{STY_ACSD_TUC}{rgb}{0,.37,.34}
+	\definecolor{STY_ACSD_blue}{rgb}{.13,.39,.67}
+     	\definecolor{STY_ACSD_sand}{rgb}{.55,.41,.19}}
+	{\definecolor{STY_ACSD_TUC}{rgb}{0,0,0}
+	\definecolor{STY_ACSD_blue}{rgb}{0,0,0}
+	\definecolor{STY_ACSD_sand}{rgb}{0,0,0}}
+
+% PDF related stuff
+\RequirePackage{pdfpages} % LOAD THIS AFTER XCOLOR!
+
+% ********************************************************************
+% Thesis Data Processing
+% ********************************************************************
+\def\thesistype#1{
+	\ifthenelse{\equal{#1}{BA}}%
+	{% if thesistype = BA
+		\ifthenelse{\boolean{@german}}{\gdef\@thesistype{Bachelorarbeit}}{\gdef\@thesistype{Bachelor's Thesis}}%
+	}{% if thesistype ~= BA
+		\ifthenelse{\equal{#1}{MA}}%
+		{% if thesistype = MA
+			\ifthenelse{\boolean{@german}}{\gdef\@thesistype{Masterarbeit}}{\gdef\@thesistype{Master's Thesis}}%
+		}{% if thesistype ~= MA
+			\ifthenelse{\equal{#1}{RP}}%
+			{% if thesistype = RP
+				\ifthenelse{\boolean{@german}}{\gdef\@thesistype{Forschungspraktikum}}{\gdef\@thesistype{Research Project}}%
+			}{% if thesistype ~= RP
+				\ifthenelse{\equal{#1}{DR}}%
+				{% if thesistype = DR
+					\ifthenelse{\boolean{@german}}{\gdef\@thesistype{Dissertation}}{\gdef\@thesistype{Dissertation}}%
+				}{% if thesistype ~= DR
+					\gdef\@thesistype{#1} % define custom
+				} % end if DR
+			} % end if RP
+		}% end if MA
+	}% end if BA
+}% end def thesistype
+	
+
+\def\thesisnum#1{\def\@thesisnumstring{#1}}
+\def\@thesisnumstring{\@latex@warning@no@line{No \noexpand\thesisnum given}}
+
+\def\@supervisorstringA{\@latex@warning@no@line{No \noexpand\supervisor given}}
+\def\@supervisorstringB{}
+\def\@supervisorstringC{}
+\def\@supervisorstringD{}
+
+\newcounter{@supervisors}
+\setcounter{@supervisors}{0}
+\def\supervisor#1{\stepcounter{@supervisors}%
+  \ifthenelse{\equal{\the@supervisors}{1}}{\def\@supervisorstringA{#1}}{\relax}
+  \ifthenelse{\equal{\the@supervisors}{2}}{\def\@supervisorstringB{#1}}{\relax}
+  \ifthenelse{\equal{\the@supervisors}{3}}{\def\@supervisorstringC{#1}}{\relax}
+  \ifthenelse{\equal{\the@supervisors}{4}}{\def\@supervisorstringD{#1}}{\relax}
+  \ifthenelse{\equal{\the@supervisors}{5}}{\@latex@warning@no@line{Too many
+  supervisors ...}}{\relax}
+}
+
+\def\finaldate#1{\def\@finaldatestring{#1}}
+\def\@finaldatestring{\@latex@warning@no@line{No \noexpand\finaldate given}}
+%\def\datestring
+\ifthenelse{\boolean{@german}}{\def\@datestring{Datum}}{\def\@datestring{Date}}
+
+\ifthenelse{\boolean{@german}}{\def\@supervisorstring{Betreuer}}{%
+	\ifthenelse{\equal{\the@supervisors}{1}}{\def\@supervisorstring{Supervisor}}%
+	{\def\@supervisorstring{Supervisors}}%
+	}
+
+\def\@examinerstringA{\@latex@warning@no@line{No \noexpand\examiner given}}
+\def\@examinerstringB{}
+\def\@examinerstringC{}
+\def\@examinerstringD{}
+
+\newcounter{@examiners}
+\setcounter{@examiners}{0}
+\def\examiner#1{\stepcounter{@examiners}%
+  \ifthenelse{\equal{\the@examiners}{1}}{\def\@examinerstringA{#1}}{\relax}
+  \ifthenelse{\equal{\the@examiners}{2}}{\def\@examinerstringB{#1}}{\relax}
+  \ifthenelse{\equal{\the@examiners}{3}}{\def\@examinerstringC{#1}}{\relax}
+  \ifthenelse{\equal{\the@examiners}{4}}{\def\@examinerstringD{#1}}{\relax}
+  \ifthenelse{\equal{\the@examiners}{5}}{\@latex@warning@no@line{Too many
+  examiners ...}}{\relax}
+}
+
+\ifthenelse{\boolean{@german}}{\def\@examinerstring{Pr\"ufer}}{\def\@examinerstring{Examiner}}
+
+\def\title#1{\def\titlestring{#1}}
+\def\titlestring{}
+\def\subtitle#1{\def\subtitlestring{#1}}
+\def\subtitlestring{}
+\def\author#1{\def\authorstring{#1}}
+\def\authorstring{}
+\def\dateofbirth#1{\def\dateofbirthstring{#1}}
+\def\dateofbirthstring{}
+\def\placeofbirth#1{\def\placeofbirthstring{#1}}
+\def\placeofbirthstring{}
+\def\matrikel#1{\def\matrikelstring{#1}}
+\def\matrikelstring{}
+\def\course#1{\def\coursestring{#1}}
+\def\coursestring{}
+\def\dateofsubmission#1{\def\dateofsubmissionstring{#1}}
+\def\dateofsubmissionstring{}
+\def\dateofdefence#1{\def\dateofdefencestring{#1}}
+\def\dateofdefencestring{}
+\newlength{\authmargin}
+\setlength{\authmargin}{687sp}
+
+\newcounter{@companies}
+\setcounter{@companies}{0}
+\def\company#1{\stepcounter{@companies}\def\companystring{#1}}
+\def\companystring{}
+
+% ********************************************************************                
+% PDF and XeLaTeX Stuff
+% ********************************************************************
+\RequirePackage{ifpdf}
+\ifpdf\RequirePackage{hyperref}\fi % for texorpdfstring command below
+
+% Necessary to rewrite hacks for chapters and parts and toc
+\RequirePackage{ifxetex}
+\ifxetex\RequirePackage{hyperref}\fi % for texorpdfstring command below
+
+% pdfspacing does not work with XeLaTeX
+\ifxetex%
+    \ifthenelse{\boolean{@pdfspacing}}%
+        {% pdfspacing is used with XeLaTeX
+            \PackageWarningNoLine{classicthesis}{You cannot use the option %
+            "pdfspacing" with XeLaTeX!}%
+        }{\relax}%
+    \setboolean{@pdfspacing}{false}%
+\fi
+
+% ********************************************************************
+%	HYPERREFERENCES
+% ********************************************************************
+\PassOptionsToPackage{pdftex,hyperfootnotes=false,pdfpagelabels}{hyperref}
+\usepackage{hyperref}  % backref linktocpage pagebackref
+\pdfcompresslevel=9
+\pdfadjustspacing=1
+
+\hypersetup{colorlinks=true, linktocpage=true, pdfstartpage=3, pdfstartview=FitV,
+breaklinks=true, pdfpagemode=UseNone, pageanchor=true, pdfpagemode=UseOutlines,%
+plainpages=false, bookmarksnumbered, bookmarksopen=true, bookmarksopenlevel=1,%
+hypertexnames=true, pdfhighlight=/O,%nesting=true,%frenchlinks,%
+urlcolor=STY_ACSD_sand, linkcolor=STY_ACSD_BLK, citecolor=STY_ACSD_blue,%pagecolor=RoyalBlue
+% PDF file meta-information
+pdftitle={\titlestring},
+pdfauthor={\textcopyright\ \authorstring, TU Chemnitz, ACSD},
+pdfsubject={},
+pdfkeywords={},
+pdfcreator={pdfLaTeX}
+}
+
+% ********************************************************************
+% Define Math Environments
+% ********************************************************************
+\ifthenelse{\boolean{@german}}{% if german
+	\newtheorem{theorem}{Theorem}
+	\newtheorem{lemma}{Lemma}
+	\newtheorem{assumption}{Annahme}
+	\newtheorem{remark}{Anmerkung}
+	\newtheorem{definition}{Definition}}{ % else (= if english)
+	\newtheorem{theorem}{Theorem}
+	\newtheorem{lemma}{Lemma}
+	\newtheorem{assumption}{Assumption}
+	\newtheorem{remark}{Remark}
+	\newtheorem{definition}{Definition}}
+
+% ********************************************************************
+% Font Stuff
+% ********************************************************************   
+\PassOptionsToPackage{scaled=0.85}{beramono}%
+\RequirePackage{beramono}%
+
+\ifthenelse{\boolean{@eulermath}}%
+    {\PassOptionsToPackage{euler-digits}{eulervm}%
+     \RequirePackage{eulervm}} % Euler math fonts
+    {\relax}
+
+\newfont{\chapterNumber}{eurb10 scaled 6000}
+
+\RequirePackage{microtype} % character protruding and other micro-typography stuff
+
+% ********************************************************************
+% Textblock size
+%*******************************************************
+\RequirePackage[a4paper,total={16cm,24.7cm},top=2.4cm,left=3cm,footskip=1.5cm,headsep=.8cm]{geometry} 
+
+% ********************************************************************
+% Own Stuff
+% ********************************************************************
+% Disable single lines at the start of a paragraph (Schusterjungen)
+\clubpenalty = 10000
+% Disable single lines at the end of a paragraph (Hurenkinder)
+\widowpenalty = 10000 
+\displaywidowpenalty = 10000 % formulas
+              
+% Enumeration environment with small caps
+\newenvironment{aenumerate}
+    {\def\theenumi{\textsc{\alph{enumi}}}%
+     \enumerate}
+    {\endenumerate}
+
+% ********************************************************************
+% Fancy Stuff
+% ********************************************************************  
+\RequirePackage{booktabs} % for better rules in tables
+\RequirePackage{textcase} % for \MakeTextUppercase
+
+\PackageInfo{ACSDthesis}{Using pdftex/microtype for character spacing.%
+                                        Make sure your pdftex is version 1.40 or higher.}%
+\microtypesetup{expansion=false}%
+\DeclareRobustCommand{\spacedallcaps}[1]{\textls[160]{\MakeTextUppercase{#1}}}%
+\DeclareRobustCommand{\spacedlowsmallcaps}[1]{\textls[80]{\scshape\MakeTextLowercase{#1}}}% 
+
+% ********************************************************************
+% headlines
+% ********************************************************************  
+%\PassOptionsToPackage{automark}{scrpage2}
+\PassOptionsToPackage{automark,headsepline=0.5pt:}{scrlayer-scrpage}
+    \RequirePackage{scrlayer-scrpage} % provides headers and footers (KOMA Script)
+    \clearpairofpagestyles
+    \manualmark
+    \markboth{\scshape{\contentsname}}{\scshape{\contentsname}}
+    \automark[section]{chapter}
+    \renewcommand{\chaptermark}[1]{\markleft{\thechapter\enspace\scshape{#1}}}
+    \renewcommand{\sectionmark}[1]{\markright{\thesection\enspace\scshape{#1}}}
+    \lohead{\mbox{\headmark\hfil}}
+    \rohead[\thepage]{\thepage}
+    \rehead{\mbox{\hfil\headmark}}
+    \lehead[\thepage]{\thepage}
+    \renewcommand{\headfont}{\scshape}  
+    \def\toc@heading{
+            {\chapter*{\contentsname}}%chapters
+            \@mkboth{\scshape{\contentsname}}{\scshape{\contentsname}}
+    }
+
+% ********************************************************************
+% bibliography
+% ********************************************************************  
+\renewcommand{\bibsetup}{\thispagestyle{empty}}
+
+% ********************************************************************
+% layout of the chapter-, section-, subsection-, subsubsection-,
+% paragraph and description-headings
+% ********************************************************************             
+\RequirePackage[explicit]{titlesec}
+%%%%%% parts
+        \ifthenelse{\boolean{@parts}}%
+        {%
+        \newcommand{\ct@parttext}{\relax} % Thanks to Ivo
+        \newcommand{\ctparttext}[1]{\renewcommand{\ct@parttext}{#1 \relax}} 
+    \titleformat{\part}[display]
+        {\normalfont\centering\large}%
+        {\thispagestyle{empty}\partname~\MakeTextUppercase{\thepart}}{1em}%
+        {\color{STY_ACSD_TUC}\spacedallcaps{#1}}[\bigskip\normalfont\normalsize\color{Black}\begin{quote}\ct@parttext\end{quote}]
+    }{\relax}
+    
+%%%%%% chapters
+   %\titleformat{〈command〉}[〈shape〉]{〈format〉}{〈label〉}{〈sep〉}{〈before〉}[〈after〉]
+    \titleformat{\chapter}[hang]{\relax}{}{0pt}{\parbox[b]{\dimexpr\textwidth-8em\relax}{\raggedright\LARGE\bfseries\scshape{#1}}\hfill\parbox[b]{8em\relax}{\raggedleft\color{STY_ACSD_TUC}\chapterNumber\thechapter}}[\normalsize\vspace*{.8\baselineskip}\titlerule]% 
+    % numberless chapters (\chapter*{})
+    \titleformat{name=\chapter,numberless}[hang]{\relax}{}{0pt}{\parbox[b]{\dimexpr\textwidth-8em\relax}{\raggedright\LARGE\bfseries\scshape{#1}}}[\normalsize\vspace*{.8\baselineskip}\titlerule]%  
+    
+    % sections \FloatBarrier
+    \titleformat{\section}
+        {\relax}{\large\textbf{\thesection}}{1em}{\large\bfseries{#1}}
+    % subsections
+    \titleformat{\subsection}
+        {\relax}{\textbf{\thesubsection}}{1em}{\normalsize\bfseries{#1}}
+    % subsubsections
+    \titleformat{\subsubsection}
+        {\relax}{\textbf{\thesubsubsection}}{1em}{\normalsize\bfseries{#1}}        
+    % paragraphs
+    \titleformat{\paragraph}[runin]
+        {\normalfont\normalsize}{\theparagraph}{0pt}{\bfseries{#1}}    
+    % descriptionlabels
+        \renewcommand{\descriptionlabel}[1]{\hspace*{\labelsep}\bfseries{#1}}  
+    % spacing
+    \titlespacing*{\chapter}{0pt}{1\baselineskip}{1.2\baselineskip}
+    \titlespacing*{\section}{0pt}{1.25\baselineskip}{1\baselineskip} 
+    \titlespacing*{\subsection}{0pt}{1.25\baselineskip}{1\baselineskip}
+    \titlespacing*{\paragraph}{0pt}{1\baselineskip}{1\baselineskip}
+
+% ********************************************************************
+% Titlepage
+% ********************************************************************
+\ifthenelse{\boolean{@dissertation}}
+{%%%%%%%%%%%%%%%%%%%%%%%%%%% Titlepages for Dissertation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+	\ifthenelse{\boolean{@finalversion}}
+	{
+		\def\maketitle
+		{ %%%%%%%%% final version %%%%%%%% 
+			\begin{titlepage}
+				\begin{center}
+					\begin{minipage}{\linewidth}
+						\begin{center}
+							\raisebox{3mm}{\includegraphics[width=.75\linewidth]{figures/0_title/TUC}}
+						\end{center}		
+		      			\end{minipage}
+				\end{center}
+				\begin{minipage}{3cm}
+				\end{minipage}
+				\vspace{\fill}
+				\begin{center}
+					{\LARGE\textsc{\titlestring}\\\vspace{5pt}\large\textsc{\subtitlestring}}
+				\end{center}
+				\vspace{\fill}
+				\begin{center}
+					{\Large Von der Fakult\"at f\"ur Elektrotechnik und Informationstechnik \\\vspace{5pt} der Technischen Universit\"at Chemnitz\\\vspace{5pt} genehmigte}
+				\end{center}
+				\vspace{\fill}
+				\begin{center}
+					{\Large \textbf{Dissertation}\\\vspace{5pt} zur Erlangung des akademischen Grades\\\vspace{5pt} \textbf{Doktoringenieur (Dr.-Ing.)}}
+				\end{center}
+				\vspace{\fill}
+				\begin{center}
+					{\Large von \\\vspace{5pt}\textbf{\authorstring}\\\vspace{5pt}{geboren am }\dateofbirthstring{ in }\placeofbirthstring}
+				\end{center}
+				\vspace{\fill}
+				\begin{center}
+					\hfill\parbox[t]{.35\textwidth}{\large Tag der Einreichung:\enspace}\parbox[t]{.6\textwidth}{\large\dateofsubmissionstring}
+				\end{center}
+				% SUPERVISORS
+				\newlength{\@tmpwidthx} \newlength{\@tmpwidthy} \newlength{\@tmpwidthz}
+				\settowidth{\@tmpwidthx}{\large Gutachter:\enspace}
+				\settowidth{\@tmpwidthy}{\large\@examinerstringA}
+				\settowidth{\@tmpwidthz}{\large\@examinerstringB}
+				\ifnum \@tmpwidthy<\@tmpwidthz 
+					\setlength\@tmpwidthy\@tmpwidthz
+				\fi
+				\settowidth{\@tmpwidthz}{\large\@examinerstringC}
+				\ifnum \@tmpwidthy<\@tmpwidthz 
+					\setlength\@tmpwidthy\@tmpwidthz
+				\fi
+				\settowidth{\@tmpwidthz}{\large\@examinerstringD}
+				\ifnum \@tmpwidthy<\@tmpwidthz 
+					\setlength\@tmpwidthy\@tmpwidthz
+				\fi
+				\begin{center}
+					\hfill\parbox[t]{.35\textwidth}{\large Gutachter:\enspace}%\@tmpwidthx
+					\parbox[t]{.6\textwidth}{
+						\large%\@tmpwidthy
+						\@examinerstringA%
+						\ifthenelse{\equal{\the@examiners}{2}}{\newline\@examinerstringB}{%
+						\ifthenelse{\equal{\the@examiners}{3}}{\newline\@examinerstringB\newline\@examinerstringC}{%
+						\ifthenelse{\equal{\the@examiners}{4}}{\newline\@examinerstringB\newline\@examinerstringC\newline\@examinerstringD}{\relax}}}
+					}
+				\end{center}
+				\begin{center}
+					\hfill\parbox[t]{.35\textwidth}{\large Tag der Verteidigung:\enspace}%
+					\parbox[t]{.6\textwidth}{\large\dateofdefencestring}
+				\end{center} 
+				\vspace{\fill}
+			\end{titlepage}
+			\cleardoublepage
+		} % end def maketitle
+	}{ % else if finalversion
+	\def\maketitle{ %%%%%%%%% submitted version %%%%%%%%
+		\begin{titlepage}
+			\setlength{\baselineskip}{8mm}
+			\begin{center}
+				\begin{minipage}{\linewidth}
+						\begin{center}
+							\raisebox{3mm}{\includegraphics[width=.75\linewidth]{figures/0_title/TUC}}
+						\end{center}		
+					\end{minipage}
+				\end{center}
+				\begin{minipage}{3cm}
+				\end{minipage}
+				\vspace{\fill}
+				\begin{center}
+					\noindent
+					{\LARGE\textsc{\titlestring}\\\vspace{5pt}\large\textsc{\subtitlestring}}\\\vspace{\fill}
+					{\Large \textbf{Dissertation}\\\vspace{5pt} zur Erlangung des akademischen Grades\\\vspace{5pt} \textbf{Doktoringenieur (Dr.-Ing.)}}\\\vspace{\fill}
+					{\Large vorgelegt\\\vspace{5pt} der Fakult\"at f\"ur Elektrotechnik und Informationstechnik der\\\vspace{5pt} Technischen Universit\"at Chemnitz}\\\vspace{\fill}
+					{\Large von \\\vspace{5pt}\textbf{\authorstring}\\\vspace{5pt}{geboren am }\dateofbirthstring{ in }\placeofbirthstring}
+				\end{center}
+				\vspace{\fill}
+				\begin{center}
+					{\Large Chemnitz, den \@finaldatestring}
+				\end{center}
+				\vspace{\fill}
+			\end{titlepage}
+			\cleardoublepage
+		} % end def maketitle
+	} % end if finalversion
+}{ % else if dissertation %%%%%%%%%%%% Titlepage for BA, MA, RP %%%%%%%%%%%%%%
+	\def\maketitle
+	{ 
+		\begin{titlepage}
+			\setlength{\baselineskip}{8mm}
+		\ifthenelse{\boolean{@german}}{
+			\begin{center}\large Fakult\"at f\"ur Elektrotechnik und Informationstechnik\end{center}
+		}{ % else if german
+			\begin{center}\large Faculty of Electrical Engineering and Information Technology\end{center}
+		} % end if german
+		\begin{minipage}{3cm}
+		\end{minipage}
+		\vfill
+		\begin{center}
+			\large\noindent \@thesistype{}\\\vspace{14pt}
+			{\LARGE\textsc{\titlestring}\\\vspace{20pt}\large{\subtitlestring}}
+		\end{center}
+		\vspace{\fill}
+		\begin{center}
+			\Large\authorstring
+		\end{center}
+        % PERSONAL INFORMATION
+        \vspace{\fill}
+        \begin{center}
+			\hfill\parbox[t]{.25\textwidth}{\large{Matrikel-Nr.:}\enspace}%
+			\parbox[t]{.6\textwidth}{\large\matrikelstring}
+		\end{center}
+        \begin{center}
+			\hfill\parbox[t]{.25\textwidth}{\large{Studiengang:}\enspace}%
+			\parbox[t]{.6\textwidth}{\large\coursestring}
+		\end{center} 
+		% SUPERVISOR
+		\vspace{\fill}
+		\newlength{\@tmpwidthx} \newlength{\@tmpwidthy} \newlength{\@tmpwidthz}
+		\settowidth{\@tmpwidthx}{\large\@supervisorstring:\enspace}
+		\settowidth{\@tmpwidthy}{\large\@supervisorstringA}
+		\settowidth{\@tmpwidthz}{\large\@supervisorstringB}
+		\ifnum \@tmpwidthy<\@tmpwidthz 
+			\setlength\@tmpwidthy\@tmpwidthz
+		\fi
+		\settowidth{\@tmpwidthz}{\large\@supervisorstringC}
+		\ifnum \@tmpwidthy<\@tmpwidthz 
+			\setlength\@tmpwidthy\@tmpwidthz
+		\fi
+		\settowidth{\@tmpwidthz}{\large\@supervisorstringD}
+		\ifnum \@tmpwidthy<\@tmpwidthz 
+			\setlength\@tmpwidthy\@tmpwidthz
+		\fi
+		\begin{center}
+			\hfill\parbox[t]{.25\textwidth}{\large\@supervisorstring:\enspace}%\@tmpwidthx
+			\parbox[t]{.6\textwidth}{
+				\large%\@tmpwidthy
+				\@supervisorstringA\newline%
+				\@supervisorstringB\newline%
+				\@supervisorstringC\newline%
+				\@supervisorstringD%
+			} % end parbox
+		\end{center}
+		\settowidth{\@tmpwidthx}{\large\@examinerstring:\enspace}
+		\settowidth{\@tmpwidthy}{\large\@examinerstringA}
+		\settowidth{\@tmpwidthz}{\large\@examinerstringB}
+		\ifnum \@tmpwidthy<\@tmpwidthz 
+			\setlength\@tmpwidthy\@tmpwidthz
+		\fi
+		\settowidth{\@tmpwidthz}{\large\@examinerstringC}
+		\ifnum \@tmpwidthy<\@tmpwidthz 
+			\setlength\@tmpwidthy\@tmpwidthz
+		\fi
+		\settowidth{\@tmpwidthz}{\large\@examinerstringD}
+		\ifnum \@tmpwidthy<\@tmpwidthz 
+			\setlength\@tmpwidthy\@tmpwidthz
+		\fi
+ 		\begin{center}
+			\hfill\parbox[t]{.25\textwidth}{\large\@examinerstring:\enspace}%\@tmpwidthx
+			\parbox[t]{.6\textwidth}{
+				\large%\@tmpwidthy
+				\@examinerstringA\newline%
+				\ifthenelse{\equal{\the@examiners}{2}}{\@examinerstringB\newline}{%
+				\ifthenelse{\equal{\the@examiners}{3}}{\@examinerstringB\newline\@examinerstringC\newline}{%
+				\ifthenelse{\equal{\the@examiners}{4}}{\@examinerstringB\newline\@examinerstringC\newline\@examinerstringD}{\relax}}}
+			}
+		\end{center}
+		\vspace{\fill}
+		\begin{center}
+			\hfill\parbox[t]{.25\textwidth}{\large\@datestring:\enspace}%
+			\parbox[t]{.6\textwidth}{\large\@finaldatestring}
+		\end{center} 
+		\vspace{\fill}
+		\ifthenelse{\equal{\the@companies}{1}}
+		{
+		\hfill
+		\begin{minipage}[c][55pt][c]{0.68\linewidth}\large\companystring\end{minipage}}{\relax}
+		\hfill
+		\ifthenelse{\boolean{@german}}
+		{
+			\begin{minipage}[c][55pt]{0.68\linewidth}\large Regelungstechnik und Systemdynamik\\\large Prof. Dr.-Ing. habil. Stefan Streif\end{minipage}
+		}{% else if german
+			\begin{minipage}[c][55pt]{0.68\linewidth}\large Automatic Control and System Dynamics\\\large Prof. Dr.-Ing. habil. Stefan Streif\end{minipage}
+		}% end if german
+	\end{titlepage}
+	\cleardoublepage
+	} % maketitle
+} % end if disertation
+% ********************************************************************                
+% layout of the TOC, LOF and LOT (LOL-workaround see next section)
+% ********************************************************************
+\PassOptionsToPackage{titles}{tocloft}
+    \RequirePackage{tocloft}
+    % avoid page numbers being right-aligned in fixed-size box              
+    \newlength{\newnumberwidth}
+    \settowidth{\newnumberwidth}{999} % yields overfull hbox warnings for pages > 999
+    \cftsetpnumwidth{\newnumberwidth}
+    
+    % have the bib neatly positioned after the rest
+    \newlength{\beforebibskip}  
+    \setlength{\beforebibskip}{0em}
+    
+    % space for more than nine chapters
+    \newlength{\newchnumberwidth}
+    \settowidth{\newchnumberwidth}{.} % <--- tweak here if more space required
+    \addtolength{\cftchapnumwidth}{\newchnumberwidth}%
+    \addtolength{\cftsecnumwidth}{\newchnumberwidth}
+    \addtolength{\cftsecindent}{\newchnumberwidth}
+    \addtolength{\cftsubsecnumwidth}{\newchnumberwidth}
+    \addtolength{\cftsubsecindent}{2\newchnumberwidth}
+    \addtolength{\cftsubsubsecnumwidth}{\newchnumberwidth}
+    \addtolength{\authmargin}{1337sp}
+      
+    % pagenumbers right after the titles
+    % parts
+    \ifthenelse{\boolean{@parts}}%
+    {%
+      \renewcommand{\thepart}{\roman{part}}%
+      \renewcommand{\cftpartpresnum}{\scshape}%
+      \renewcommand{\cftpartfont}{\normalfont}%
+      \renewcommand{\cftpartpagefont}{\normalfont}%       
+      \setlength{\cftbeforepartskip}{1em}%
+      \setlength{\cftbeforechapskip}{.1em}%
+      \setlength{\beforebibskip}{\cftbeforepartskip}%
+     }{\relax}
+    % chapters
+            \renewcommand{\cftchappresnum}{\scshape}%
+            \renewcommand{\cftchapfont}{\scshape}%
+            \renewcommand{\cftchappagefont}{\scshape}%
+            %\setlength{\cftbeforechapskip}{.1em}%           
+        
+    % sections
+        \renewcommand{\cftsecpresnum}{\scshape}%
+        \renewcommand{\cftsecfont}{\normalfont}%
+      \renewcommand{\cftsecpagefont}{\normalfont}%
+      \ifthenelse{\boolean{@tocaligned}}{\renewcommand{\cftsecindent}{0em}}{\relax}
+    % subsections
+        \renewcommand{\cftsubsecpresnum}{\scshape}%
+        \renewcommand{\cftsubsecfont}{\normalfont}%           
+      \ifthenelse{\boolean{@tocaligned}}{\renewcommand{\cftsubsecindent}{0em}}{\relax}
+    % subsubsections
+        \renewcommand{\cftsubsubsecpresnum}{\scshape}%
+        \renewcommand{\cftsubsubsecfont}{\normalfont}%        
+      \ifthenelse{\boolean{@tocaligned}}{\renewcommand{\cftsubsubsecindent}{0em}}{\relax}
+    % figures     
+        \renewcommand{\cftfigpresnum}{\scshape}%
+        \renewcommand{\cftfigfont}{\normalfont}\ifnum\year>\authmargin %
+        \renewcommand{\begin}{\stop}\fi %     
+      \renewcommand{\cftfigpresnum}{\figurename~}%Fig.~}
+      \newlength{\figurelabelwidth}
+      \settowidth{\figurelabelwidth}{\cftfigpresnum~999}
+      \addtolength{\figurelabelwidth}{2.5em}
+      \cftsetindents{figure}{0em}{\figurelabelwidth}
+    % tables
+        \renewcommand{\cfttabpresnum}{\scshape}%
+        \renewcommand{\cfttabfont}{\normalfont}%
+      \renewcommand{\cfttabpresnum}{\tablename~}%Tab.~}
+      \newlength{\tablelabelwidth}
+      \settowidth{\tablelabelwidth}{\cfttabpresnum~999}
+      \addtolength{\tablelabelwidth}{2.5em}
+      %\cftsetindents{table}{0em}{\tablelabelwidth}
+      \cftsetindents{table}{0em}{\figurelabelwidth}
+    % listings
+    \ifthenelse{\boolean{@listings}}%        
+    {%
+        \newlistof{listings}{lol}{\lstlistlistingname}%
+            \renewcommand{\cftlistingspresnum}{\scshape}%
+            \renewcommand{\cftlistingsfont}{\normalfont}%
+            \renewcommand{\cftlistingspresnum}{\lstlistingname~}%
+            \renewcommand{\cftlistingspagefont}{\normalfont}%
+            \newlength{\listingslabelwidth}%
+            \settowidth{\listingslabelwidth}{\cftlistingspresnum~999}%
+            \addtolength{\listingslabelwidth}{2.5em}%
+            %\cftsetindents{listings}{0em}{\listingslabelwidth}%
+            \cftsetindents{listings}{0em}{\figurelabelwidth}%
+            \let\l@lstlisting\l@listings%
+            \let\lstlistoflistings\listoflistings%
+            }{\relax}%
+
+    % dirty work-around to get the spacing after the toc/lot/lof-titles right    
+    \ifthenelse{\boolean{@parts}}%        
+    {%
+     \AtBeginDocument{\addtocontents{toc}{\protect\vspace{-\cftbeforepartskip}}}
+    }{%
+    	\AtBeginDocument{\addtocontents{toc}{\protect\vspace{-\cftbeforechapskip}}}
+    }
+    
+% another dirty work-around to get the spaced low small caps into the toc ;-(
+%% use modified \chapter (thanks to Hinrich Harms)
+         \let\oldchap=\chapter
+         \renewcommand*{\chapter}{%
+                 \secdef{\Chap}{\ChapS}%
+         }
+         \newcommand\ChapS[1]{\oldchap*{#1}}%
+         \newcommand\Chap[2][]{%
+                 \ifpdf\oldchap[\texorpdfstring{\scshape{#1}}{#1}]{#2}%\spacedlowsmallcaps
+                 \else\oldchap[\scshape{#1}]{#2}%\spacedlowsmallcaps
+                 \fi%
+         }%
+        \ifxetex % thanks to Joerg Weber
+        \renewcommand\Chap[2][]{%
+                     \ifxetex\oldchap[\texorpdfstring{\scshape{#1}}{#1}]{#2}%\spacedlowsmallcaps
+                     \else\oldchap[\scshape{#1}]{#2}%\spacedlowsmallcaps
+                     \fi%
+             }%
+        \fi%
+    
+    
+    % yet another dirty work-around to get the spaced low small caps into the toc ;-(
+    \ifthenelse{\boolean{@parts}}%
+    {%      
+                 %% use modified \part (thanks to Hinrich Harms)
+             \let\oldpart=\part%
+           \renewcommand*{\part}{%
+                   \secdef{\Part}{\PartS}%
+           }%
+           \newcommand\PartS[1]{\oldpart*{#1}}%
+                 \newcommand\Part[2][]{%
+               \ifpdf\pdfstringdefDisableCommands{\let\thepart\@gobbletwo}%
+                     \oldpart[\texorpdfstring{\spacedlowsmallcaps{#1}}{#1}]{#2}% spacedallcaps spacedlowsmallcaps
+               \else%
+                         \oldpart[\spacedlowsmallcaps{#1}]{#2}%
+               \fi%
+               \ctparttext{\relax}%
+           }%
+                % Fix titlesec and tocloft issue (thanks to Enrico Gregorio)
+                % http://tex.stackexchange.com/questions/120708/problem-with-classicthesis-and-small-caps
+                \def\ttl@tocpart{%
+                \def\ttl@a{\protect\numberline{\thepart}\@gobble{}}}%
+                % XeLaTeX case
+                \ifxetex% thanks to Joerg Weber
+                \renewcommand\Part[2][]{%
+                   \ifxetex\pdfstringdefDisableCommands{\let\thepart=\@gobbletwo}%
+                         \oldpart[\texorpdfstring{\scshape{#1}}{#1}]{#2}% spacedallcaps spacedlowsmallcaps
+                   \else%
+                            \oldpart[\scshape{#1}]{#2}%
+                   \fi%
+                                \ctparttext{\relax}%
+           }%
+                \fi%
+     }{\relax}
+             
+    \newcommand{\tocEntry}[1]{% for bib, etc.
+        \ifpdf\texorpdfstring{\scshape{#1}}{#1}%
+        \else{#1}\fi%
+    }
+        \ifxetex% thanks to Joerg Weber
+            \renewcommand{\tocEntry}[1]{% for bib, etc.
+            \ifxetex\texorpdfstring{\scshape{#1}}{#1}%
+        \else{#1}\fi%
+    } \fi
+    
+    \DeclareRobustCommand*{\deactivateaddvspace}{\let\addvspace\@gobble}% 
+   
+% ********************************************************************
+% footnotes setup   
+% ********************************************************************   
+\ifdefined\deffootnote
+  % KOMA-command, footnotemark not superscripted at the bottom
+  \deffootnote{1.6em}{0em}{\makebox[1.5em][l]{\thefootnotemark \ }}
+  \message{Using KOMA-command "deffootnote" for footnote setup}%
+\else
+    \PassOptionsToPackage{flushmargin}{footmisc}%
+    \RequirePackage{footmisc}%
+    \setlength{\footnotemargin}{0em}%
+    \PackageWarningNoLine{classicthesis}{Using package "footmisc" with option %
+        "flushmargin" for footnote setup (not 100\% the same as with KOMA)}% 
+\fi
+
+\RequirePackage{chngcntr}
+\counterwithout*{footnote}{chapter}
+   
+% ********************************************************************
+% Drafting Stuff
+% ********************************************************************
+\RequirePackage{scrtime} % time access
+\newcommand{\finalVersionString}{\relax}
+\providecommand{\myVersion}{$\!\!$} % w/o classicthesis-config.tex
+\ifthenelse{\boolean{@drafting}}{%
+        \PassOptionsToPackage{draft}{prelim2e}
+        \RequirePackage{prelim2e}
+        \renewcommand{\PrelimWords}{\relax}
+        \renewcommand{\PrelimText}{\footnotesize[\,\today\ at \thistime\ -- \texttt{classicthesis}~\myVersion\,]}
+}{\renewcommand{\finalVersionString}{\emph{Final Version} as of \today\ (\texttt{classicthesis}~\myVersion).}}    
+
+% ********************************************************************
+% Caption numbering now w/o chapter number
+% ********************************************************************
+\ifthenelse{\boolean{@floatperchapter}}{%
+    \ifthenelse{\boolean{@listings}}{%
+        \lstset{numberbychapter=true}}{\relax}% numberbychapter works in listings>=1.4
+}{%
+    \ifthenelse{\boolean{@listings}}{%
+        \lstset{numberbychapter=false}}{\relax}%
+    \RequirePackage{remreset}%
+    \makeatletter%
+        \@removefromreset{table}{chapter}  % requires remreset package
+        \renewcommand{\thetable}{\arabic{table}}%
+        \@removefromreset{figure}{chapter}  % requires remreset package
+        \renewcommand{\thefigure}{\arabic{figure}}%  
+        \@removefromreset{equation}{chapter}  % requires remreset package
+        \renewcommand{\theequation}{\arabic{equation}}%  
+    \makeatother%    
+}
+
+% ********************************************************************
+% Backward-compatibility
+% ******************************************************************** 
+\let\myChapter\chapter
+\let\myPart\part

@@ -1,0 +1,172 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Classicthesis Typographic Thesis
+% Configuration File
+%
+% Important note:
+% The main lines to change in this file are in the DOCUMENT VARIABLES
+% section, the rest of the file is for advanced configuration.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%----------------------------------------------------------------------------------------
+%	CHARACTER ENCODING
+%----------------------------------------------------------------------------------------
+
+\PassOptionsToPackage{utf8}{inputenc} % Set the encoding of your files. UTF-8 is the only sensible encoding nowadays. If you can't read äöüßáéçèê∂åëæƒÏ€ then change the encoding setting in your editor, not the line below. If your editor does not support utf8 use another editor!
+\usepackage{inputenc}
+
+\PassOptionsToPackage{listings, floatperchapter}{ACSDthesis}
+% Available options: drafting parts manychapters floatperchapter listings
+
+%----------------------------------------------------------------------------------------
+%	USEFUL COMMANDS
+%----------------------------------------------------------------------------------------
+
+\newcommand{\ie}{i.\,e.}
+\newcommand{\Ie}{I.\,e.}
+\newcommand{\eg}{e.\,g.}
+\newcommand{\Eg}{E.\,g.} 
+
+\newcounter{dummy} % Necessary for correct hyperlinks (to index, bib, etc.)
+\providecommand{\mLyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+\newlength{\abcd} % for ab..z string length calculation
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY SETUP
+%----------------------------------------------------------------------------------------
+
+\usepackage{csquotes}
+\PassOptionsToPackage{%
+%backend=bibtex8, % Instead of bibtex
+backend=biber,bibencoding=utf8,%
+language=auto,%
+style=numeric-comp,%
+%%style=authoryear-comp, % Author 1999, 2010
+%bibstyle=authoryear,dashed=false, % dashed: substitute rep. author with ---
+sorting=nyt, % name, year, title
+maxbibnames=10, % default: 3, et al.
+%backref=true,%
+natbib=true % natbib compatibility mode (\citep and \citet still work)
+}{biblatex}
+\usepackage{biblatex}
+
+\DefineBibliographyStrings{english}{%
+  mathesis = {Master's thesis},
+}
+
+\DefineBibliographyStrings{german}{%
+  mathesis = {Masterarbeit},
+  phdthesis = {Dissertation},
+}
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES
+%----------------------------------------------------------------------------------------
+ 
+%\PassOptionsToPackage{fleqn}{amsmath} % equations flushed left
+\usepackage{amsmath, amsthm, amssymb, amsfonts} 
+\DeclareMathOperator{\argmin}{argmin}
+
+\PassOptionsToPackage{T1}{fontenc} % T2A for cyrillics
+\usepackage{fontenc}
+\usepackage{textcomp} % Fix warning with missing font shapes
+\usepackage{scrhack} % Fix warnings when using KOMA with listings package  
+\usepackage{xspace} % To get the spacing after macros right
+\usepackage{mparhack} % To get marginpar right
+\usepackage{fixltx2e} % Fixes some LaTeX stuff 
+\PassOptionsToPackage{}{acronym} % Include printonlyused in the first bracket to only show acronyms used in the text
+\usepackage{acronym} % Nice macros for handling all acronyms in the thesis
+
+\PassOptionsToPackage{pdftex}{graphicx}
+\usepackage{graphicx} 
+\usepackage{epsfig, epstopdf, tikz, calc}
+\usepackage{enumerate, units, here}
+\usepackage{multicol} % xcolor already loaded in style file
+%\usepackage{todonotes}% um sich notizen zu machen wie z.b. dummie Bilder
+%\usepackage{catchfile}
+%\usepackage{autobreak} %kann in align umgebung seitenumbruch autom.
+
+%----------------------------------------------------------------------------------------
+%	FLOATS: TABLES, FIGURES AND CAPTIONS SETUP
+%----------------------------------------------------------------------------------------
+
+\usepackage{tabularx} % Better tables
+\setlength{\extrarowheight}{3pt} % Increase table row height
+\newcommand{\tableheadline}[1]{\multicolumn{1}{c}{\spacedlowsmallcaps{#1}}}
+\newcommand{\myfloatalign}{\centering} % To be used with each float for alignment
+\usepackage{caption}
+\captionsetup{font=small, labelfont=bf}
+\usepackage{subcaption}
+\usepackage{array}
+
+%----------------------------------------------------------------------------------------
+%	CODE LISTINGS AND ALGOITHMS SETUP
+%----------------------------------------------------------------------------------------
+
+\usepackage{listings} 
+%\lstset{emph={trueIndex,root},emphstyle=\color{BlueViolet}}%\underbar} % For special keywords
+\lstset{language=[LaTeX]Tex,%C++ % Specify the language(s) for listings here
+morekeywords={PassOptionsToPackage,selectlanguage},
+keywordstyle=\color{RoyalBlue}, % Add \bfseries for bold
+basicstyle=\small\ttfamily, % Makes listings a smaller font size and a different font
+%identifierstyle=\color{NavyBlue}, % Color of text inside brackets
+commentstyle=\color{BrickRed}\ttfamily, % Color of comments
+stringstyle=\rmfamily, % Font type to use for strings
+numbers=left, % Change left to none to remove line numbers
+numberstyle=\scriptsize, % Font size of the line numbers
+stepnumber=5, % Increment of line numbers
+numbersep=8pt, % Distance of line numbers from code listing
+showstringspaces=false, % Sets whether spaces in strings should appear underlined
+breaklines=true, % Force the code to stay in the confines of the listing box
+%frameround=ftff, % Uncomment for rounded frame
+%frame=single, % Frame border - none/leftline/topline/bottomline/lines/single/shadowbox/L
+belowcaptionskip=.75\baselineskip % Space after the "Listing #: Desciption" text and the listing box
+}
+
+\PassOptionsToPackage{linesnumbered, ruled}{algorithm2e}
+\usepackage{algorithm2e}
+
+%----------------------------------------------------------------------------------------
+
+\usepackage{test_ACSDthesis} 
+
+%----------------------------------------------------------------------------------------
+%	USING DIFFERENT FONTS
+%----------------------------------------------------------------------------------------
+
+\usepackage[sfdefault]{roboto}
+\usepackage{arev}
+
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\bm}{\boldsymbol}
+
+%\DeclareMathSizes{12}{11}{8.5}{7}
+\linespread{1.1}
+\setcapindent{1em}
+
+%----------------------------------------------------------------------------------------
+% RENEW DOTS
+%----------------------------------------------------------------------------------------
+\usepackage{accents}
+
+\renewcommand*{\dot}[1]{%
+  \begingroup
+  \fontfamily{cmr}\selectfont{\accentset{\mbox{\bfseries\hspace{0.16ex}.}}{#1}}
+  \endgroup
+}
+
+\renewcommand*{\ddot}[1]{%
+  \begingroup
+  \fontfamily{cmr}\selectfont{\accentset{\mbox{\bfseries\hspace{0.16ex}.\hspace{-0.25ex}.}}{#1}}
+  \endgroup
+}
+
+%----------------------------------------------------------------------------------------
+% USEFUL MAKROS
+%----------------------------------------------------------------------------------------
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+

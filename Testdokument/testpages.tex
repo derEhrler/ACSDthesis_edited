@@ -1,0 +1,21 @@
+\chapter{Einleitung} \label{chap:Einleitung}
+\thispagestyle{empty}
+Gestzliche Bestimmungen zur Erhöhung der Sicherheit von sowohl den Insassen eines Fahrzeugs als auch anderer Verkehrsteilnehmer haben in den letzten Jahrzehnten zu einer signifikanten Senkung der Mortalitätsrat bei Verkehrsunfällen beigetragen.
+\noindent Im Jahr 2021 gab es über 250.000 Unfälle mit Personenschaden auf deutschen Straßen. In 88\% der Fälle ist die Ursache auf ein Fehlverhalten der Fahrzeugführer zurückzuführen. Der Einsatz von automatisierten Fahrzeugen kann zu einem weiteren Rückgang der in Abbildung gezeigten Statistik führen, indem es den Fahrer durch Einsatz von intelligenten Asstenzsystemen unterstützt oder die menschliche Fehlerkomponente gänzlich beseitigt, indem ein Fahrzeug vollständig autonom fährt.
+
+Um die Sicherheit der Fahrzeuge zu gewährleisten muss sowhl das Gesamtsystem als auch alle Teilsysteme intensiv getestet werden. Eines dieser Teilsystem für das hochautomatisierte Fahren ist die Regelung der Längs- und Querführung des Fahrzeugs. Bei der IAV\footnote{\url{https://www.iav.com/}} geschieht dies durch einen modellprädiktiven Pfadfolgeregler.\bigskip
+
+\noindent\textbf{Aufgabenstellung}\smallskip
+
+\noindent Im Rahmen des Praktikums soll eine automatisierte Teststrategie für einen modellprädiktiven Pfadfolgeregler (MPFC) konzeptioniert und implementiert werden.
+
+Modellprädiktive Regler (MPC) eignen sich hervorragend für die Vorhersage und Regelung dynamischer Systeme, weshalb sie in vielen Industriezweigen, einschließlich der Automobilindustrie, Anwendung finden. Im Bereich des hochautomatisierten Fahrens können mithilfe von MPC in Echtzeit Fahrentscheidungen, die sowohl sicherheits- als auch komfortrelevante Anforderungen erfüllen, getroffen werden. Um die Sicherheit und Zuverlässigkeit des Systems sicherzustellen sollen realitätsnahe Fahrszenarien ermittelt und anhand von festgelegten Key Performance Indicators (KPIs) bewertet werden. Dieser Prozess soll automatisiert in einer CI Pipeline ablaufen.\medskip
+
+\noindent Es sind die folgenden Teilaufgaben umzusetzen:
+\begin{itemize}
+    \item Konzeptentwicklung für das automatisierte, szenariobasierte Testen der MPFC unter Verwendung der bestehenden Simulationsumgebung
+    \item Definition und Parametrierung geeigneter Fahrszenarien
+    \item Definition von KPIs zur Beurteilung der Leistung der Regelung
+    \item Einbindung in eine Gitlab CI Pipeline
+    \item Dokumentation der Ergebnisse
+\end{itemize}
