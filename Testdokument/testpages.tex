@@ -1,21 +1,34 @@
-\chapter{Einleitung} \label{chap:Einleitung}
-\thispagestyle{empty}
-Gestzliche Bestimmungen zur Erhöhung der Sicherheit von sowohl den Insassen eines Fahrzeugs als auch anderer Verkehrsteilnehmer haben in den letzten Jahrzehnten zu einer signifikanten Senkung der Mortalitätsrat bei Verkehrsunfällen beigetragen.
-\noindent Im Jahr 2021 gab es über 250.000 Unfälle mit Personenschaden auf deutschen Straßen. In 88\% der Fälle ist die Ursache auf ein Fehlverhalten der Fahrzeugführer zurückzuführen. Der Einsatz von automatisierten Fahrzeugen kann zu einem weiteren Rückgang der in Abbildung gezeigten Statistik führen, indem es den Fahrer durch Einsatz von intelligenten Asstenzsystemen unterstützt oder die menschliche Fehlerkomponente gänzlich beseitigt, indem ein Fahrzeug vollständig autonom fährt.
+\begin{equation}
+    J = \sum_{i=1}^{n_p} \left\| Q \left( y(k+i) - y_R(k+i) \right) \right\|^2 + r \cdot \sum_{i=1}^{n_p} \left\| u(k+i-1) \right\|^2
+\end{equation}
 
-Um die Sicherheit der Fahrzeuge zu gewährleisten muss sowhl das Gesamtsystem als auch alle Teilsysteme intensiv getestet werden. Eines dieser Teilsystem für das hochautomatisierte Fahren ist die Regelung der Längs- und Querführung des Fahrzeugs. Bei der IAV\footnote{\url{https://www.iav.com/}} geschieht dies durch einen modellprädiktiven Pfadfolgeregler.\bigskip
+\begin{align}
+    x(k+1)  &= f(x(k), u(k)) \\
+    y(k)    &= g(x(k), u(k))
+\end{align}
 
-\noindent\textbf{Aufgabenstellung}\smallskip
+\begin{equation}
+    \begin{aligned}
+    C(x(t_k), s(t_k), u(\cdot), v_s(\cdot)) &= \int_{t_k}^{t_k + T_p} \left\| 
+    \begin{pmatrix}
+    e(\tau) \\
+    a_{\text{lat}}(\tau)
+    \end{pmatrix}
+    \right\|_Q^2 + \left\| 
+    \begin{pmatrix}
+    u(\tau) \\
+    v_s(\tau) - v_{s, \text{des}}(\tau)
+    \end{pmatrix}
+    \right\|_R^2 \, d\tau \\
+    &\quad + \left\| 
+    \begin{pmatrix}
+    e(t_k + T_p) \\
+    a_{\text{lat}}(t_k + T_p)
+    \end{pmatrix}
+    \right\|_P^2
+    \end{aligned}
+\end{equation}
 
-\noindent Im Rahmen des Praktikums soll eine automatisierte Teststrategie für einen modellprädiktiven Pfadfolgeregler (MPFC) konzeptioniert und implementiert werden.
-
-Modellprädiktive Regler (MPC) eignen sich hervorragend für die Vorhersage und Regelung dynamischer Systeme, weshalb sie in vielen Industriezweigen, einschließlich der Automobilindustrie, Anwendung finden. Im Bereich des hochautomatisierten Fahrens können mithilfe von MPC in Echtzeit Fahrentscheidungen, die sowohl sicherheits- als auch komfortrelevante Anforderungen erfüllen, getroffen werden. Um die Sicherheit und Zuverlässigkeit des Systems sicherzustellen sollen realitätsnahe Fahrszenarien ermittelt und anhand von festgelegten Key Performance Indicators (KPIs) bewertet werden. Dieser Prozess soll automatisiert in einer CI Pipeline ablaufen.\medskip
-
-\noindent Es sind die folgenden Teilaufgaben umzusetzen:
-\begin{itemize}
-    \item Konzeptentwicklung für das automatisierte, szenariobasierte Testen der MPFC unter Verwendung der bestehenden Simulationsumgebung
-    \item Definition und Parametrierung geeigneter Fahrszenarien
-    \item Definition von KPIs zur Beurteilung der Leistung der Regelung
-    \item Einbindung in eine Gitlab CI Pipeline
-    \item Dokumentation der Ergebnisse
-\end{itemize}
+\begin{equation}
+    J(x(t_k),\theta(t_k),\bar{u},\bar{\vartheta}(\cdot)) = \int_{t_k}^{t_k + T_p} F(\bar{e}(\tau),\bar{x}(\tau),\bar{u}(\tau),\bar{\vartheta}(\tau))d\tau + E(\bar{e}(t_k+T_p),\bar{x}(t_k+T_p))
+\end{equation}
