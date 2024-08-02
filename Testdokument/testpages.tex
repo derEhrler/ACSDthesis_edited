@@ -1,13 +1,4 @@
 \begin{equation}
-    J = \sum_{i=1}^{n_p} \left\| Q \left( y(k+i) - y_R(k+i) \right) \right\|^2 + r \cdot \sum_{i=1}^{n_p} \left\| u(k+i-1) \right\|^2
-\end{equation}
-
-\begin{align}
-    x(k+1)  &= f(x(k), u(k)) \\
-    y(k)    &= g(x(k), u(k))
-\end{align}
-
-\begin{equation}
     \begin{aligned}
     C(x(t_k), s(t_k), u(\cdot), v_s(\cdot)) &= \int_{t_k}^{t_k + T_p} \left\| 
     \begin{pmatrix}
@@ -32,3 +23,27 @@
 \begin{equation}
     J(x(t_k),\theta(t_k),\bar{u},\bar{\vartheta}(\cdot)) = \int_{t_k}^{t_k + T_p} F(\bar{e}(\tau),\bar{x}(\tau),\bar{u}(\tau),\bar{\vartheta}(\tau))d\tau + E(\bar{e}(t_k+T_p),\bar{x}(t_k+T_p))
 \end{equation}
+
+\begin{equation}
+    F(e, x, u, \vartheta) = 
+    \left\| \frac{e}{a_{\text{lat}}(x)} \right\|^2_Q + 
+    \left\| \frac{u}{\vartheta - \vartheta_{\text{ref}}} \right\|^2_R
+\end{equation}
+\begin{equation}
+    E(e, x) = \left\| \frac{e}{a_{\text{lat}}(x)} \right\|^2_P
+\end{equation}
+
+\begin{align}
+    F(e, x, u, 9) &= \left\| \frac{e}{a_{\text{lat}}(x)} \right\|_Q^2 + \left\| \frac{u}{9 - g_{\text{ref}}} \right\|_R^2 \label{eq:F} \\
+    E(e, x) &= \left\| \frac{e}{a_{\text{lat}}(x)} \right\|_P^2 \label{eq:E}
+\end{align}
+
+\begin{equation}
+    \begin{split}
+        Q &= \operatorname{diag}(q_x, q_y, q_\psi, q_a), \\
+        P &= \operatorname{diag}(p_x, p_y, p_\psi, p_a), \\
+        R &= \operatorname{diag}(r_a, r_\omega, r_v),
+    \end{split}
+\end{equation}
+
+\end{document}
