@@ -46,4 +46,40 @@
     \end{split}
 \end{equation}
 
+% Equation for F
+\begin{align}
+    F(e, x, u, \vartheta) &= \left\| \begin{matrix} e \\a_{lat}(x) \end{matrix} \right\|_Q^2 + \left\| \begin{matrix} u \\ \vartheta - \vartheta_{ref} \end{matrix} \right\|_R^2 \\
+    E(e, x) &= \left\| \begin{matrix} e \\ a_{lat}(x) \end{matrix} \right\|_P^2
+\end{align}
+
+\begin{align}
+    \dot{\bar{x}}(\tau) &= f(\bar{x}(\tau), \bar{u}(\tau)), \quad \bar{x}(t_k) = x(t_k) \\
+    \dot{\bar{\theta}}(\tau) &= \breve{\vartheta}(\tau), \quad \bar{\theta}(t_k) = \theta(t_k) \\
+    \bar{e}(\tau) &= h(\bar{x}(\tau)) - p(\bar{\theta}(\tau)) \\
+    \bar{u}(\tau) &\in \mathcal{U}, \quad \bar{x}(\tau) \in \mathcal{X} \\
+    \bar{\theta}(\tau) &\in [0, \theta_{\text{max}}], \quad \breve{\vartheta}(\tau) \in \mathcal{V} \\
+    h_c(\bar{x}(\tau), \bar{u}(\tau)) &\leq 0
+\end{align}
+
+    \begin{subequations}
+    \begin{align}
+    J(x(t_k),\theta(t_k),\bar{u}^{*}(\cdot),\bar{\vartheta}^{*}(\cdot)) = &\underset{u(\cdot), \vartheta(\cdot)}{\min} J(x(t_k), \theta(t_k), \bar{u}(\cdot), \bar{\vartheta}(\cdot)) \\
+    s.t \hspace{30pt}&\dot{\bar{x}}(\tau) = f(\bar{x}(\tau), \bar{u}(\tau)), \quad \bar{x}(t_k) = x(t_k) \label{eq:1a}\\
+    &\dot{\bar{\theta}}(\tau) = \bar{\vartheta}(\tau), \quad \bar{\theta}(t_k) = \theta(t_k) \label{eq:1b}\\
+    &\bar{e}(\tau) = h(\bar{x}(\tau)) - p(\bar{\theta}(\tau)) \label{eq:1c}\\
+    &\bar{u}(\tau) \in \mathcal{U}, \quad \bar{x}(\tau) \in \mathcal{X} \label{eq:1d}\\
+    &\bar{\theta}(\tau) \in [0, \theta_{max}], \quad \bar{\vartheta}(\tau) \in \mathcal{V} \label{eq:1e}\\
+    &h_c(\bar{x}(\tau), \bar{u}(\tau)) \leq 0 \label{eq:1f}
+    \end{align}
+    \end{subequations}
+
+
+
+    
+    \begin{enumerate}
+        \item Der Ausgang des Systems $y$ konvergiert auf den Pfad $\mathcal{P}$: $\lim \limits_{t \to \infty} \|e(t)\| = 0$ mit der Pfadabweichung $e(t) := h(x(t)) - p(\theta(t))$.
+        \item Die Pfadgeschwindigkeit konvergiert auf die Referenzgeschwindigkeit: $\lim \limits_{t \to \infty} \|\bar{\theta}(t)-\bar{\theta}_{ref}(t)\| = 0$
+        \item Die Zustandsbeschränkungen $\mathcal{X}$ und Eingangsgrößenbeschränkungen $\mathcal{U}$ werden eingehalten.
+    \end{enumerate} 
+
 \end{document}

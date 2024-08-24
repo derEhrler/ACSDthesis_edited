@@ -34,12 +34,12 @@ Die Struktur der modellprädiktiven Pfadfolgeregelung, für die in diesem Prakti
 
 \noindent Betrachtet wird das zeitkontinuierliche, nichtlineare System der Form 
 \begin{align}
-    \dot{x}(t)  &= f(x(t),u(t)), x(t_0) = x_0 \\
+    \dot{x}(t)  &= f(x(t),u(t)), x(t_0)= x_0\\
     y(t)        &= h(x(t)) 
 \end{align}
 mit den Zuständen $x\in\mathcal{X}\subseteq\mathbb{R}^{N_x}$, Eingängen $u\in\mathcal{U}\subseteq\mathbb{R}^{N_u}$ und dem Ausgang $y\in\mathcal{Y}\subseteq\mathbb{R}^{N_y}$.
  
-Die geometrische Kurve $\mathcal{P}:\{p(\theta)\in\mathbb{R}^{N_y}|\theta\in[\theta_0,\theta_1]\mapsto p(\theta)\}$ ist als Referenzpfad gegeben. Der Pfadparameter $\theta$ gibt die Position auf dem Referenzpfad an. Dieser wird durch $p(\theta)$ parametrisiert:
+Die geometrische Kurve $\mathcal{P}:\{p(\theta)\in\mathbb{R}^{N_y}|\theta\in[\theta_0,\theta_1]\mapsto p(\theta)\}$ ist als Referenzpfad gegeben und wird durch $p(\theta)$ parametrisiert.
 \begin{equation}
     p(\theta) = 
     \begin{bmatrix}
@@ -48,26 +48,41 @@ Die geometrische Kurve $\mathcal{P}:\{p(\theta)\in\mathbb{R}^{N_y}|\theta\in[\th
         \psi_{\text{ref}}(\theta)
     \end{bmatrix}    
 \end{equation}
-
-
-
-
-
-Geschwindigkeitszuweisung
-
-
-Durch die Implementierung wird ein konvergieren des Pfades auf den Sollpfad sichergestellt \cite{ritschel2019}.
-
-
+Der Pfadparameter $\theta$ gibt die Position auf dem Referenzpfad an. Dieser wird als ein virtueller Zustand von einem zusätzlichen Eingang, der Geschwindigkeit $\vartheta\in\mathcal{V}\subseteq\mathbb{R}$, beeinflusst. Dadurch ist eine Geschwindigkeitszuweisung möglich.
 \begin{equation}
-    J(x(t_k),\theta(t_k),\bar{u},\bar{\vartheta}(\cdot)) = \int_{t_k}^{t_k + T_p} F(\bar{e}(\tau),\bar{x}(\tau),\bar{u}(\tau),\bar{\vartheta}(\tau))d\tau + E(\bar{e}(t_k+T_p),\bar{x}(t_k+T_p))
+    \dot{\theta}(t)=\vartheta(t)
 \end{equation}
 
-\begin{align}
-    F(e, x, u, 9) &= \left\| \frac{e}{a_{\text{lat}}(x)} \right\|_Q^2 + \left\| \frac{u}{9 - g_{\text{ref}}} \right\|_R^2 \label{eq:F} \\
-    E(e, x) &= \left\| \frac{e}{a_{\text{lat}}(x)} \right\|_P^2 \label{eq:E}
-\end{align}
+Es kann nun ein Regler für das lösen des Pfadfolgeproblems mit Geschwindigkeitszuweisung entworfen werden, der folgende Eigenschaften besitzt:
+\begin{enumerate}
+    \item Der Ausgang des Systems $y$ konvergiert auf den Pfad $\mathcal{P}$: $\lim \limits_{t \to \infty} \|e(t)\| = 0$ mit der Pfadabweichung $e(t) := h(x(t)) - p(\theta(t))$.
+    \item Die Pfadgeschwindigkeit konvergiert auf die Referenzgeschwindigkeit: $\lim \limits_{t \to \infty} \|\bar{\theta}(t)-\bar{\theta}_{ref}(t)\| = 0$
+    \item Die Zustandsbeschränkungen $\mathcal{X}$ und Eingangsgrößenbeschränkungen $\mathcal{U}$ werden eingehalten.
+\end{enumerate}
 
+\medskip
+\noindent Das OCP, welches zu jedem diskreten Zeitpunkt $t_k=kT_s$ mit der Samplingzeit $T_s$ gelöst werden soll ist folgendes:
+\begin{subequations}
+\begin{align}
+    J(x(t_k),\theta(t_k),\bar{u}^{*}(\cdot),\bar{\vartheta}^{*}(\cdot)) = &\underset{u(\cdot), \vartheta(\cdot)}{\min} J(x(t_k), \theta(t_k), \bar{u}(\cdot), \bar{\vartheta}(\cdot)) \label{eq:minProblemA}\\
+    s.t \hspace{30pt} &\dot{\bar{x}}(\tau) = f(\bar{x}(\tau), \bar{u}(\tau)), \quad \bar{x}(t_k) = x(t_k) \label{eq:minProblemB}\\
+    &\dot{\bar{\theta}}(\tau) = \bar{\vartheta}(\tau), \quad \bar{\theta}(t_k) = \theta(t_k) \label{eq:minProblemC}\\
+    &\bar{e}(\tau) = h(\bar{x}(\tau)) - p(\bar{\theta}(\tau)) \label{eq:minProblemD}\\
+    &\bar{u}(\tau) \in \mathcal{U}, \quad \bar{x}(\tau) \in \mathcal{X} \label{eq:minProblemE}\\
+    &\bar{\theta}(\tau) \in [0, \theta_{max}], \quad \bar{\vartheta}(\tau) \in \mathcal{V} \label{eq:minProblemF}\\
+    &h_c(\bar{x}(\tau), \bar{u}(\tau)) \leq 0 \label{eq:minProblemG}
+\end{align}
+\end{subequations}
+\noindent Die optimalen Eingangsgrößen sind $\bar{u}^{*}(\cdot),\bar{\vartheta}^{*}(\cdot)$. Die Kostenfunktion ist definiert durch
+\begin{multline}
+    J(x(t_k),\theta(t_k),\bar{u}(\cdot),\bar{\vartheta}(\cdot)) = \\ \int_{t_k}^{t_k + T_p} F(\bar{e}(\tau),\bar{x}(\tau),\bar{u}(\tau),\bar{\vartheta}(\tau))d\tau + E(\bar{e}(t_k+T_p),\bar{x}(t_k+T_p))
+\end{multline}
+\noindent mit den Wegkosten $F(\cdot)$ und den Endkosten $E(\cdot)$:
+\begin{align}
+    F(e, x, u, \vartheta) &= \left\| \begin{matrix} e \\a_{lat}(x) \end{matrix} \right\|_Q^2 + \left\| \begin{matrix} u \\ \vartheta - \vartheta_{ref} \end{matrix} \right\|_R^2 \\
+    E(e, x) &= \left\| \begin{matrix} e \\ a_{lat}(x) \end{matrix} \right\|_P^2
+\end{align}
+\noindent Die Kostenfunktionen werden durch die Diagonalmatrizen $Q$, $R$ und $P$ gewichtet:
 \begin{equation}
     \begin{split}
         Q &= \operatorname{diag}(q_x, q_y, q_\psi, q_a), \\
