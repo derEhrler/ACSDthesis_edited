@@ -116,25 +116,13 @@ Eine weitere Klassifizierungsmöglichkeit ist nach dem Abstraktionsgrad, wie in 
     \label{fig:scenario_level}
 \end{figure}
 
-\section{Softwartests und Unit-Tests} \label{sec:CICD}
-
-% Ein geeignetes Testmanagement erhöht die Qualität einer Software maßgeblich. Ein Testprozess läuft in der Regel nach dem in Abbildung \ref{fig:testprozess} dargestellten Schema ab. Für den Testprozess exitisieren die Normen IEEE 829 und ISO-Standard 9126. Das International Software Testing Qualifications Board (ISTQB) arbeitet auf Grundlage dieser Normen an der Standardisierung von Systemtests \cite{witte2019testmanagement}.
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.7\textwidth]{figures/2_Grundlagen/testprozess.png}
-%     \caption{Ablauf eines Testprozesses \cite{witte2019testmanagement}}
-%     \label{fig:testprozess}
-% \end{figure}
-
-%%%
-% Unit Test Zeug
-% Witte: S. 22 Testnormen: kurz ausführen, später verwenden
-%%%
-
-Ein geeignetes Testmanagement erhöht die Qualität einer Software maßgeblich, indem mehr Fehler im Entwicklungsprozess entdeckt werden und beseitigt werden können. Eine Möglichkeit Testprozesse durchzuführen steckt hinter den Schlagworten Continuous Integration (CI) und Continuous Deployment (CD). Darunter versteht sich ein Prozess zum entwickeln, testen und freigeben von Software unter Nutzung von Versionsverwaltungssoftware wie er in Abbildung \ref{fig:ci-cd-flow-desktop} dargestellt ist. Wenn ein Entwickler in einem Softwaremodul Änderungen veranlasst, läuft ein automatischer Testprozess ab. Dieser ist typischerweise in Stages unterteilt, in Abbildung \ref{fig:ci-cd-flow-desktop} sind diese BUILD, TEST, MERGE. Werden darin keine Fehler in der Software gefunden werden die Änderungen eines Moduls zusammen mit den Änderungen an allen Modulen zusammengefasst und und somit die gesamte Software auf den aktuellen Stand gebracht (Continuous Delivery). Werden für die Gesamtsoftware ebenfalls keine Fehler gefunden kann eine neue Softwareversion zum Kunden gebracht werden (Continuous Deployment). Dieser Testprozess läuft in der Regel automatisch ab und veringert die Anzahl an Fehlern in Software \cite{redhat2024}.
+\section{Softwareentwicklungsprozesse und Unit-Tests} \label{sec:CICD}
+Ein geeignetes Testmanagement erhöht die Qualität einer Software maßgeblich, indem Fehler bereits im Entwicklungsprozess entdeckt und behoben werden können. Eine Möglichkeit Testprozesse durchzuführen steckt hinter den Schlagwörtern Continuous Integration (CI) und Continuous Deployment (CD). Darunter versteht sich ein Prozess zum entwickeln, testen und freigeben von Software unter Verwendung einer Versionsverwaltungssoftware, wie er in Abbildung \ref{fig:ci-cd-flow-desktop} dargestellt ist. Wenn in einem Modul einer größeren Softwareplattform Änderungen vorgenommen werden, geschieht dies in der Regel auf einer lokalen Kopie der Gesamtsoftware. Bevor diese Änderungen in das geteilte Repository für alle Entwickler übernommen werden, läuft ein automatisierter Testprozess ab (Continous Integration). Dieser ist typischerweise in Stages unterteilt, beispielsweise build, test und merge. Dabei wird sowohl die Funktionalität eines Moduls und der Teilfunktionen (Unit-Tests), als auch das Zusammenspiel der Module untereinander (Integration-Test) überprüft. Es kann dadurch sichergestellt werden, dass die Software auch mit den Änderungen noch korrekt funktioniert. Treten in diesen Prozesschritten keine Fehler auf, werden die Änderungen übernommen und damit die Software auf den aktuellen Stand gebracht (Continuous Delivery). In einem weiteren Schritt kann die aktualisiete Software automatisiert an den Kunden ausgeliefert werden (Continuous Deployment). \cite{redhat2024}. Die Implementierung und Ausführung dieser Schritte wird häufig als Pipeline bezeichnet \cite{Merode2023}.
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{figures/2_Grundlagen/ci-cd-flow-desktop.png}
     \caption{Ablauf eines CI/CD Prozesses \cite{redhat2024}}
     \label{fig:ci-cd-flow-desktop}
 \end{figure}
+
+Ein Unit-Test im klassischen Sinne ist für die Überprüfung einer einzelnen Einheit (engl.: unit) einer Software, beispielsweise einer Klasse oder einer einzelnen Funktion, zuständig. Dabei wird dieser Teil des Programms isoliert betrachtet und alle Abhängigkeiten durch Testcode ersetzt. Auf diese Weise kann sehr effizient der fehlerhafte Bereich des Programmcodes gefunden werden \cite{Khorikov2020}. Von der klassichen Begriffsdefinition abweichend ist die betrachtete Einheit in diesem Bericht die gesamte Implementierung des modellprädiktiven Pfadfolgereglers. Dieser ist ein Teilmodul in dem Softwarestack für das autonome Fahren und wird durch die Bereitstellung der Simulationsumgebung isoliert. 
