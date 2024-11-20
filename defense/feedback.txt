@@ -1,0 +1,21 @@
+* Schriftgröße
+* Konsistenz (Test Suite)
+* Ausblick: Idee, wie das ganze eingebunden werden kann liefern
+* weniger Zeit bei der Gliederung
+* 4: Legende zu größen, Erklärung zu Bedingungen
+* Klammern um Norm, weil Vektor
+* 6: Bilder größer
+* 7. klarer herausstellen was was ist
+* 8: CI erklären
+* 10: Formatierung, nette Animation
+* 11: KPI folie schöner machen, evtl Diagramm einbauen von Simulationsergebnissen
+* 12: Konsistenz
+* 13: Fehler schnell aufzeigen, über Folie aber drüber huschen
+* Referenzen: grau zentriert unter bild [Autor Jahr], in Referenzen näher aufgreifen
+* im MPC Thema fit sein
+* erläutern warum Pfadfolge, was da anders
+* Formulare fürs ZPA mitbringen
+* Dienstag an Moreno fertigen Slides
+
+
+
