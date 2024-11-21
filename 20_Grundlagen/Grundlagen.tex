@@ -78,8 +78,8 @@ Der Pfadparameter $\theta$ gibt die Position auf dem Referenzpfad an. Dieser wir
 \noindent Prädizierte Systemzustände und Eingänge werden mit $\bar{x}(\cdot)$ und $\bar{u}(\cdot)$, optimale Eingangsgrößen mit $\bar{u}^{*}(\cdot),\bar{\vartheta}^{*}(\cdot)$ bezeichnet. Die Systemdynamik wird durch die Gleichungen \ref{eq:minProblemB} und \ref{eq:minProblemC} repräsentiert. Die Abweichung des Systems vom Pfad geht durch Gleichung \ref{eq:minProblemD} in das Optimierungsproblem ein. Die Gleichungen \ref{eq:minProblemE} und \ref{eq:minProblemF} geben Beschränkungen für Zustände und Eingangsgrößen vor. Geschwindigkeitsabhängige Beschränkungen der Lenkaktorik werden mit Gleichung \ref{eq:minProblemG} berücksichtigt. 
 \noindent Die Wegkosten $F(\cdot)$ und die Endkosten $E(\cdot)$ sind mit
 \begin{align}
-    F(e, x, u, \vartheta) &= \left\| \begin{matrix} e \\a_{lat}(x) \end{matrix} \right\|_Q^2 + \left\| \begin{matrix} u \\ \vartheta - \vartheta_{ref} \end{matrix} \right\|_R^2 \\
-    E(e, x) &= \left\| \begin{matrix} e \\ a_{lat}(x) \end{matrix} \right\|_P^2
+    F(e, x, u, \vartheta) &= \left\|\left( \begin{matrix} e \\a_{lat}(x) \end{matrix} \right)\right\|_Q^2 + \left\|\left( \begin{matrix} u \\ \vartheta - \vartheta_{ref} \end{matrix} \right)\right\|_R^2 \\
+    E(e, x) &= \left\|\left( \begin{matrix} e \\ a_{lat}(x) \end{matrix} \right)\right\|_P^2
 \end{align}
 \noindent gegeben. Die Kostenfunktionen werden durch die Diagonalmatrizen $Q$, $R$ und $P$ gewichtet:
 \begin{equation}

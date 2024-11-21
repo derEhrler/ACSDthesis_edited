@@ -1,5 +1,5 @@
 * Schriftgröße
-* Konsistenz (Test Suite)
+- Konsistenz (Test Suite)
 * Ausblick: Idee, wie das ganze eingebunden werden kann liefern
 * weniger Zeit bei der Gliederung
 * 4: Legende zu größen, Erklärung zu Bedingungen
