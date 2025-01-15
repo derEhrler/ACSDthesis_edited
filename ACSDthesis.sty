@@ -634,8 +634,10 @@ pdfcreator={pdfLaTeX}
       \ifthenelse{\boolean{@tocaligned}}{\renewcommand{\cftsubsubsecindent}{0em}}{\relax}
     % figures     
         \renewcommand{\cftfigpresnum}{\scshape}%
-        \renewcommand{\cftfigfont}{\normalfont}\ifnum\year>\authmargin %
-        \renewcommand{\begin}{\stop}\fi %     
+        \renewcommand{\cftfigfont}{\normalfont}
+        % \ifnum\year>\authmargin %
+        %     \renewcommand{\begin}{\stop}
+        % \fi %     
       \renewcommand{\cftfigpresnum}{\figurename~}%Fig.~}
       \newlength{\figurelabelwidth}
       \settowidth{\figurelabelwidth}{\cftfigpresnum~999}
